@@ -1,0 +1,11 @@
+﻿
+*.csproj
+*.sln
+*.suo
+Unity_GlideRace/Library/
+Unity_GlideRace/Temp/
+Unity_GlideRace/obj/
+Unity_GlideRace/obj/Debug
+
+
+*.userprefs
