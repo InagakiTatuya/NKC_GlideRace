@@ -1,10 +1,11 @@
-﻿using UnityEngine;
-using System.Collections;
-
-//#############################################################################
+﻿//#############################################################################
 //　作者：稲垣達也
 //　継承させることでシングルトンを持たせる
 //#############################################################################
+
+using UnityEngine;
+using System.Collections;
+
 public class SingletonCustom<T> : MonoBehaviour where T : MonoBehaviour{
 
     protected static T sta_obj;
