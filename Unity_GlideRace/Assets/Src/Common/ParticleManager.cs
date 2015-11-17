@@ -53,15 +53,6 @@ public partial class ParticleManager : MonoBehaviour {
     //Update===================================================================================================================
     void Update() {
 
-        //デバッグ用\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=
-        #if UNITY_EDITOR
-        if(Input.GetKeyDown(KeyCode.Alpha0  )) Play(0, Vector3.forward * 10);
-        if(Input.GetKeyDown(KeyCode.Alpha1  )) Play(1, Vector3.forward * 10);
-        if(Input.GetKeyDown(KeyCode.Alpha2  )) Play(2, Vector3.forward * 10);
-
-        #endif
-        //\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=
-
     }
 
     //IDを圧縮と解凍===========================================================================================================
@@ -97,7 +88,6 @@ public partial class ParticleManager : MonoBehaviour {
 
         return Play(no, position, Quaternion.identity);
     }
-
     public uint Play(int no, Vector3 position, Quaternion rotation) {
         //配列外の番号だった場合、エラーコードを返す
         if(0 > no || no >= m_Particle.GetLength(0) ) {
@@ -125,6 +115,23 @@ public partial class ParticleManager : MonoBehaviour {
         Debug.LogWarning("ParticleMgr: 管理容量が足りませんでした。 現在の最大数:"+m_MAX);
         return ERROR_CODE;
     }
+    //---------------------------------------------------------------
+    //第１引数：ParticleSystem    parSys      再生したオブジェクト
+    //第２引数：int               no          再生する種類
+    //第３引数：Vecter3           position    座標
+    //第４引数：Quaternion        rotation    回転値
+    //戻り値  ：uint 管理ID
+    //---------------------------------------------------------------
+    public uint Play(ref ParticleSystem parSys, int no, Vector3 position) {
+        uint id = Play(no, position, Quaternion.identity);
+        parSys = Get(id);
+        return id;
+    }
+    public uint Play(ref ParticleSystem parSys, int no, Vector3 position, Quaternion quaternion) {
+        uint id = Play(no, position, quaternion);
+        parSys = Get(id);
+        return id;
+    }
     //停止=====================================================================================================================
     //　指定されたパーティクルを停止させます。
     //　すでに停止中である場合、何も変化ありません。
@@ -132,13 +139,7 @@ public partial class ParticleManager : MonoBehaviour {
     //第１引数：uint  id           管理ID
     //第２引数：bool  withChildren 子のパーティクルも停止するか
     //---------------------------------------------------------------
-    public void Stop(uint id) {
-        int no = 0, index = 0;
-        UnpressID(out no, out index, id);
-        m_Particle[no, index].Stop();
-
-    }
-    public void Stop(uint id, bool withChildren) {
+    public void Stop(uint id, bool withChildren = true) {
         int no = 0, index = 0;
         UnpressID(out no, out index, id);
         m_Particle[no, index].Stop(withChildren);
@@ -148,15 +149,7 @@ public partial class ParticleManager : MonoBehaviour {
     //第２引数：int   index           ナンバリング番号
     //第３引数：bool  withChildren    子のパーティクルも停止するか
     //---------------------------------------------------------------
-    public void Stop(int no, int index) {
-        //配列外の番号だった場合は、処理しない。
-        if(0 > no || no >= m_Particle.GetLength(0) || 0 > index || index >= m_Particle.GetLength(1)) {
-            Debug.LogError("●エラー:ParticleMgr:渡された値が配列外です。渡された値 : " + no);
-            return;
-        }
-        m_Particle[no, index].Stop();
-    }
-    public void Stop(int no, int index, bool withChildren) {
+    public void Stop(int no, int index, bool withChildren = true) {
         //配列外の番号だった場合は、処理しない。
         if(0 > no || no >= m_Particle.GetLength(0) || 0 > index || index >= m_Particle.GetLength(1)) {
             Debug.LogError("●エラー:ParticleMgr:渡された値が配列外です。渡された値 : " + no);

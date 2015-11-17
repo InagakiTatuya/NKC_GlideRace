@@ -7,6 +7,7 @@
 //#############################################################################
 using UnityEngine;
 
+[System.Serializable]
 public class InputData {
     public Vector2 axis;
 

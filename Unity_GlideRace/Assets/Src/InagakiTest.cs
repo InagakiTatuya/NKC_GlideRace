@@ -3,21 +3,18 @@ using System.Collections;
 
 public class InagakiTest : MonoBehaviour {
 
+    [SerializeField]
+    private float scale = 1f;
+
 	// Use this for initialization
 	void Start () {
-	
+	    Vector2 scl = new Vector2(transform.localScale.x, transform.localScale.z) * scale;
+        GetComponent<MeshRenderer>().material.SetTextureScale("_MainTex", scl);
 	}
 	
 	// Update is called once per frame
 	void Update () {
 
-        InputData data = null;
-        InputPad.InputData(ref data, 1);
-        Debug.Log("1"+data.axis);
-
-        InputPad.InputData(ref data, 2);
-        Debug.Log("2"+data.axis);
-	    
 
     }
 }

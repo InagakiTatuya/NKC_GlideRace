@@ -1,9 +1,7 @@
 ﻿
 //#############################################################################
 //　最終更新者：稲垣達也
-//　最終更新日：2015-11-01
 //
-//　メニューバーに
 //  InputManagerに自動でデータを入れるためのメニューバーとその処理を定義
 //
 //#############################################################################
@@ -35,17 +33,18 @@ public class MenuItemInputManagerSetter {
         Debug.Log("インプットマネージャーの設定を開始します。");
         InputManagerGenerator inputMgr = new InputManagerGenerator();
 
-        Debug.Log("設定を全てクリアします。");
         inputMgr.Clear();
 
         //共通の入力設定
-        inputMgr.AddAxis(AxisData.CreateKeyAxis("Horizontal" , "left", "right"));        //横軸
-        inputMgr.AddAxis(AxisData.CreateKeyAxis("Vertical"   , "up"  , "down" ));        //縦軸
-        inputMgr.AddAxis(AxisData.CreatePadAxis("Horizontal" , 1, 0));        //横軸
-        inputMgr.AddAxis(AxisData.CreatePadAxis("Vertical"   , 2, 0));        //縦軸
-        inputMgr.AddAxis(AxisData.CreateButton ("Application", "space"    , "joystick button 0" ));  //適用
-        inputMgr.AddAxis(AxisData.CreateButton ("Cancel"     , "backspace", "joystick button 1" ));  //取消 
-        inputMgr.AddAxis(AxisData.CreateButton ("Menu"       , "escape"   , "joystick button 10"));  //メニュー
+        inputMgr.AddAxis(AxisData.CreateKeyAxis("Horizontal"  , "left", "right"));//横軸
+        inputMgr.AddAxis(AxisData.CreateKeyAxis("Vertical"    , "up"  , "down" ));//縦軸
+        inputMgr.AddAxis(AxisData.CreatePadAxis("Horizontal"  , 1, 0));//横軸
+        inputMgr.AddAxis(AxisData.CreatePadAxis("Vertical"    , 2, 0));//縦軸
+        inputMgr.AddAxis(AxisData.CreateButton ("Accelerator" , "space"      , "joystick button 0" ));//適用・アクセル
+        inputMgr.AddAxis(AxisData.CreateButton ("Brake"       , "backspace"  , "joystick button 1" ));//取消 ・ブレーキ
+        inputMgr.AddAxis(AxisData.CreateButton ("Glider"      , "left shift" , "joystick button 3" ));//滑空
+        inputMgr.AddAxis(AxisData.CreateButton ("Drift"       , "left ctrl"  , "joystick button 5" ));//ドリフト
+        inputMgr.AddAxis(AxisData.CreateButton ("Menu"        , "escape"     , "joystick button 10"));//メニュー
         
 
         //プレイヤーごとの入力設定
@@ -59,6 +58,7 @@ public class MenuItemInputManagerSetter {
             inputMgr.AddAxis(AxisData.CreateButton ("P" + i + "Menu"        , "joystick " + i + " button 10"));//メニュー
         }
         
+        Debug.Log("設定を再設定しました。");
     }
 
 }
