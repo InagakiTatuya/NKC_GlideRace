@@ -11,7 +11,7 @@ using UnityEngine;
 using System.Collections;
 
 // ステート ///////////////////////////////////////////////////////////////////
-public enum PlayerState : int {
+public enum RackState : int {
     READY = 0,
     RACK1 = 1,
     RACK2 = 2,
