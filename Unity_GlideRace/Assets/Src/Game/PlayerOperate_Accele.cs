@@ -14,6 +14,7 @@ using System.Collections;
 public partial class PlayerOperate : MonoBehaviour {
 
     //加速処理=================================================================
+    //=========================================================================
     private void AccelFunc() {
         if(m_Input.brake) return;
         if(m_Input.accel) { 
@@ -24,12 +25,14 @@ public partial class PlayerOperate : MonoBehaviour {
 
     }
     //減速処理=================================================================
+    //=========================================================================
     private void BrakeFunc() {
         if(!m_Input.brake) return;
         m_Speed.SubSeed(m_Speed.ACC * 2.3f);
     }
 
     //ハンドル操作=============================================================
+    //=========================================================================
     private void HandleFunc() {
         //=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\
         //旋回するときに減速するシステムがいる
@@ -50,4 +53,52 @@ public partial class PlayerOperate : MonoBehaviour {
         }
     }
 
+    //ドリフト処理=============================================================
+    //  工事中
+    //=========================================================================
+    private void DriftFunc() {
+        //ドリフト判定
+        if(m_InputDown.drift && (int)m_Input.axis.x != 0) {
+            m_fDrift = true;
+            m_driftDir = (int)Mathf.Sign(m_Input.axis.x);
+        }
+
+        if(!m_fDrift) return;
+
+        //ドリフトカーブ処理
+        if(m_Input.drift) {
+            //------------------------------------------
+
+            //axis.x ==  0        ROTSTEP1
+            //axis.x ==  driftDir ROTSTEP2
+            //axis.x == -driftDir 回転しない
+
+            //ドリフト方向と逆に入力した場合、まっすぐ進む
+            if(m_Input.axis.x == -m_driftDir) return;
+
+            float rot = m_Speed.TURN * (((int)Mathf.Sign(m_Input.axis.x) == 0) ? ROTSTEP1 : ROTSTEP2);
+            float sin_r = Mathf.Sin(rot / 2f);
+            float cos_r = Mathf.Cos(rot / 2f);
+            Vector3 axis = new Vector3(0, -1, 0) * m_driftDir;
+
+            Quaternion f = new Quaternion(m_forward.x, m_forward.y, m_forward.z, 0.0f);
+            Quaternion q = new Quaternion(sin_r * axis.x, sin_r * axis.y, sin_r * axis.z, cos_r);
+            Quaternion r = new Quaternion(sin_r * -axis.x, sin_r * -axis.y, sin_r * -axis.z, cos_r);
+            Quaternion qr = r * f * q;
+            m_forward = new Vector3(qr.x, qr.y, qr.z).normalized;
+
+            //モデル方向
+            f = new Quaternion(m_forward.x, m_forward.y, m_forward.z, 0.0f);
+            qr = r * f * q; //もう一度回転させる
+            m_modeFrwrd = new Vector3(qr.x, qr.y, qr.z).normalized;
+
+
+            //------------------------------------------
+        } else {
+            m_fDrift = false;
+            m_driftDir = 0;
+        }
+
+    }
+    //
 }

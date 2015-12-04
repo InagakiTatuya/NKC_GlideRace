@@ -18,50 +18,55 @@ public partial class PlayerOperate : MonoBehaviour {
 
     //非公開変数^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     //参照
-    private CourseAnchors m_CouresAncs;
+    private CourseAnchors   m_CouresAncs;
+    private CameraControl   m_Camera;
+
+    //カメラ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    private Vector3         CAM_OFFSET = new Vector3(0, 4, -9);
+
     //接触^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    private int GROUND_MASK;
-    private const float HOVER = 0.3f; //地面から浮かせる距離
-    private const float UNDERRAYDIS_MIN = 0.5f; //足元レイの最小の長さ
-    private const float FRONTRAYDIS_MIN = 1.6f; //移動先レイの最小の長さ
-    private const float SLOPE = 45f / 180f * Mathf.PI; //上れる坂の角度
-    private Raycaster m_UnderRay;         //足元レイ
-    private Raycaster m_FrontDownRay;     //移動先レイ
-    private Raycaster m_FrontRay;         //移動方向レイ
-    private GravityStatus m_Gravity;          //重力ステータス
+    private int             GROUND_MASK;
+    private const float     HOVER            = 0.3f; //地面から浮かせる距離
+    private const float     UNDERRAYDIS_MIN  = 0.5f; //足元レイの最小の長さ
+    private const float     FRONTRAYDIS_MIN  = 1.6f; //移動先レイの最小の長さ
+    private const float     SLOPE            = 45f / 180f * Mathf.PI; //上れる坂の角度
+    private Raycaster       m_UnderRay;         //足元レイ
+    private Raycaster       m_FrontDownRay;     //移動先レイ
+    private Raycaster       m_FrontRay;         //移動方向レイ
+    private GravityStatus   m_Gravity;          //重力ステータス
 
     //ステータス^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    private RackState m_Rack;         //ラックステート
-    private float m_wait;         //重さ
-    private SpeedStatus m_Speed;        //速度に関するステータス
-    private GliderStatus m_Glider;       //滑空に関するステータス
-    private GoalData m_GoalData;     //ゴールデータ
-    private bool m_fOnGround;    //地面に接触
-    private bool m_fHitWoll;     //壁に接触
-    private bool m_fReverseRun;  //逆走
-    private bool m_fRespwan;     //復活判定
-    private int m_RespwonStep;  //復活ステップ
-    private AnchorData m_AncData;      //最後に通ったアンカー
-    private AnchorData m_AncDataGround;//地面に接触中に通ったアンカー
+    private RackState       m_Rack;         //ラックステート
+    private float           m_wait;         //重さ
+    private SpeedStatus     m_Speed;        //速度に関するステータス
+    private GliderStatus    m_Glider;       //滑空に関するステータス
+    private GoalData        m_GoalData;     //ゴールデータ
+    private bool            m_fOnGround;    //地面に接触
+    private bool            m_fHitWoll;     //壁に接触
+    private bool            m_fReverseRun;  //逆走
+    private bool            m_fRespwan;     //復活判定
+    private int             m_RespwonStep;  //復活ステップ
+    private AnchorData      m_AncData;      //最後に通ったアンカー
+    private AnchorData      m_AncDataGround;//地面に接触中に通ったアンカー
 
     //転回・ドリフト
     private const float ROTSTEPNEXT = 60f;  //急カーブする数値
     private const float ROTSTEP1 = 1.0f; //回転ステップ１
     private const float ROTSTEP2 = 2.3f; //回転ステップ２
-    private float m_handleSeed;   //基礎の数値
-    private bool m_fDrift;       //ドリフト中
-    private int m_driftDir;     //ドリフト方向
-    private Vector3 m_handleDir;    //ＸＺ空間上の移動方向
-    private Vector3 m_forward;      //移動方向
-    private Vector3 m_modeFrwrd;    //モデルの正面
+    private float       m_handleSeed;   //基礎の数値
+    private bool        m_fDrift;       //ドリフト中
+    private int         m_driftDir;     //ドリフト方向
+    private Vector3     m_handleDir;    //ＸＺ空間上の移動方向
+    private Vector3     m_forward;      //移動方向
+    private Vector3     m_modeFrwrd;    //モデルの正面
 
     //コースに復帰するための変数
     //PlayerOerate_Spwan.cs に定義
 
     //入力情報^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    private bool m_fInputLock; //入力を受け取りをさせない
-    private InputData m_Input;     //押しているか
-    private InputData m_InputDown; //押した瞬間
+    private bool        m_fInputLock; //入力を受け取りをさせない
+    private InputData   m_Input;      //押しているか
+    private InputData   m_InputDown;  //押した瞬間
 
     //簡略プロパティ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     private Vector3 Pos {
@@ -106,33 +111,37 @@ public partial class PlayerOperate : MonoBehaviour {
 
         //参照
         m_CouresAncs = GameObject.Find(CourseAnchors.GBJ_NAME).GetComponent<CourseAnchors>();
+        m_Camera     = GetComponentInChildren<CameraControl>();
+        //カメラ
+        m_Camera.DoWantLocalPos(true);
+        m_Camera.DoWantLocalRot(true);
 
         //接触
-        GROUND_MASK = 0x1 << LayerMask.NameToLayer(LayerNames.Ground);
-        m_UnderRay = new Raycaster();
-        m_FrontDownRay = new Raycaster();
-        m_FrontRay = new Raycaster();
-        m_Gravity = new GravityStatus();
+        GROUND_MASK      = 0x1 << LayerMask.NameToLayer(LayerNames.Ground);
+        m_UnderRay       = new Raycaster();
+        m_FrontDownRay   = new Raycaster();
+        m_FrontRay       = new Raycaster();
+        m_Gravity        = new GravityStatus();
 
         //ステータス
-        m_Rack = RackState.READY;
-        m_wait = 0;
-        m_Speed = new SpeedStatus(0.08f, 0.8f, 0.03f); //データベースから代入するように改良する
-        m_Glider = new GliderStatus();
-        m_GoalData = new GoalData();
-        m_fOnGround = false;
-        m_fHitWoll = false;
-        m_fReverseRun = false;
-        m_AncData = m_CouresAncs.GetAnc(0);
-        m_AncDataGround = m_CouresAncs.GetAnc(0);
+        m_Rack           = RackState.READY;
+        m_wait           = 0;
+        m_Speed          = new SpeedStatus(0.08f, 0.8f, 0.03f); //データベースから代入するように改良する
+        m_Glider         = new GliderStatus();
+        m_GoalData       = new GoalData();
+        m_fOnGround      = false;
+        m_fHitWoll       = false;
+        m_fReverseRun    = false;
+        m_AncData        = m_CouresAncs.GetAnc(0);
+        m_AncDataGround  = m_CouresAncs.GetAnc(0);
 
         //回転・ドリフト
         m_handleSeed = 0;
-        m_fDrift = false;
-        m_driftDir = 0;
-        m_handleDir = Forward;
-        m_forward = Forward;
-        m_modeFrwrd = Forward;
+        m_fDrift     = false;
+        m_driftDir   = 0;
+        m_handleDir  = Forward;
+        m_forward    = Forward;
+        m_modeFrwrd  = Forward;
 
         SpwanInit();
 
@@ -150,7 +159,6 @@ public partial class PlayerOperate : MonoBehaviour {
         InputDataReset();   //入力情報リセット
         SetInput();         //入力受け取り
 
-
         GravityFunc();
 
         AccelFunc();
@@ -166,10 +174,26 @@ public partial class PlayerOperate : MonoBehaviour {
         SearchAnchor();
 
         SpwanFunc();
+
+        //てすと
+        Vector3 v = CAM_OFFSET;
+        if(m_Camera.isLocalPos)  {
+            v.z += m_Speed.value * -4f;
+            m_Camera.pos = v;
+            m_Camera.smoothPosSpeed = m_Speed.value + 0.1f;
+        }else {
+            
+        }
+
     }
 
     //非公開関数///////////////////////////////////////////////////////////////
 
+    //入力データ管理===========================================================
+    //  PlayerOperate_Input.cs に定義
+
+    //アクセル・回転ドリフト処理===============================================
+    //  PlayerOperate_Accele.cs に定義
 
     //重力処理=================================================================
     private void GravityFunc() {
@@ -199,59 +223,7 @@ public partial class PlayerOperate : MonoBehaviour {
             SetPosY = Pos.y + m_Gravity.fall;
         }
     }
-
-    //加速処理=================================================================
-    // partial void AccelFunc();
-    //減速処理=================================================================
-    // partial void BrakeFunc();
-    //ハンドル操作=============================================================
-    // partial void HandleFunc();
-
-    //ドリフト処理=============================================================
-    private void DriftFunc() {
-        //ドリフト判定
-        if(m_InputDown.drift && (int)m_Input.axis.x != 0) {
-            m_fDrift = true;
-            m_driftDir = (int)Mathf.Sign(m_Input.axis.x);
-        }
-
-        if(!m_fDrift) return;
-
-        //ドリフトカーブ処理
-        if(m_Input.drift) {
-            //------------------------------------------
-
-            //axis.x ==  0        ROTSTEP1
-            //axis.x ==  driftDir ROTSTEP2
-            //axis.x == -driftDir 回転しない
-
-            //ドリフト方向と逆に入力した場合、まっすぐ進む
-            if(m_Input.axis.x == -m_driftDir) return;
-
-            float rot = m_Speed.TURN * (((int)Mathf.Sign(m_Input.axis.x) == 0) ? ROTSTEP1 : ROTSTEP2);
-            float sin_r = Mathf.Sin(rot / 2f);
-            float cos_r = Mathf.Cos(rot / 2f);
-            Vector3 axis = new Vector3(0, -1, 0) * m_driftDir;
-
-            Quaternion f = new Quaternion(m_forward.x, m_forward.y, m_forward.z, 0.0f);
-            Quaternion q = new Quaternion(sin_r * axis.x, sin_r * axis.y, sin_r * axis.z, cos_r);
-            Quaternion r = new Quaternion(sin_r * -axis.x, sin_r * -axis.y, sin_r * -axis.z, cos_r);
-            Quaternion qr = r * f * q;
-            m_forward = new Vector3(qr.x, qr.y, qr.z).normalized;
-
-            //モデル方向
-            f = new Quaternion(m_forward.x, m_forward.y, m_forward.z, 0.0f);
-            qr = r * f * q; //もう一度回転させる
-            m_modeFrwrd = new Vector3(qr.x, qr.y, qr.z).normalized;
-
-
-            //------------------------------------------
-        } else {
-            m_fDrift = false;
-            m_driftDir = 0;
-        }
-
-    }
+    
     //グライダー処理===========================================================
     private void GliderFunc() {
 

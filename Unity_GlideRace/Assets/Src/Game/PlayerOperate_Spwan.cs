@@ -24,10 +24,10 @@ public partial class PlayerOperate : MonoBehaviour {
         //ステート設定
         UnityAction[] fnInitArr = new UnityAction[SPWANSTATESIZE]{
                                       null,
-                                      null,
-                                      null,
-                                      null,
-                                      null,
+                                      SpawnStep01Init,
+                                      SpawnStep02Init,
+                                      SpawnStep03Init,
+                                      SpawnStep04Init,
                                     };
         UnityAction[] fnUpdateArr = new UnityAction[SPWANSTATESIZE] {
                                         null,
@@ -64,9 +64,14 @@ public partial class PlayerOperate : MonoBehaviour {
     //　カメラを固定           < カメラを管理・操作するものがいる
     //　　（キャラは落下し続ける）
     //=========================================================================
-    private void SpawnStep01Update() {
+    private void SpawnStep01Init() {
         m_fInputLock = true;
-        LScale = LScale * 0.9f;
+        m_Camera.DoWantLocalPos(false);
+        m_Camera.pos = Pos + CAM_OFFSET;
+        m_Camera.at  = Pos + Vector3.up * 3f;
+    }
+    private void SpawnStep01Update() {
+        LScale = LScale * 0.95f;
         
         if(LScale.x < 0.05f) {
             LScale = Vector3.one * 0.02f;
@@ -79,6 +84,9 @@ public partial class PlayerOperate : MonoBehaviour {
     //　発光体から粒子を拡散   < エフェクトがいる。エフェクトを管理するものがいる
     //　フェードアウト         < フェードマネージャを使えばいいかな？
     //=========================================================================
+    private void SpawnStep02Init() {
+
+    }
     private void SpawnStep02Update() { 
         m_RespwonStep++;
     }
@@ -89,6 +97,9 @@ public partial class PlayerOperate : MonoBehaviour {
     //　単色で発光
     //　キャラを拡大
     //=========================================================================
+    private void SpawnStep03Init() {
+
+    }
     private void SpawnStep03Update() {
         //記憶したアンカーデータから復帰用座標にキャラを移動
         SpawnPoint data = m_CouresAncs.GetSpw(m_AncDataGround.groupNo);
@@ -108,10 +119,13 @@ public partial class PlayerOperate : MonoBehaviour {
     //　復帰フラグを解除
     //　操作のロックを解除
     //=========================================================================
-    private void SpawnStep04Update() {
+    private void SpawnStep04Init() {
+        m_Camera.DoWantLocalPos(true);
+
         m_fRespwan  = false;
         m_fInputLock = false;
-
+    }
+    private void SpawnStep04Update() {
         m_RespwonStep = 0;
     }
 
