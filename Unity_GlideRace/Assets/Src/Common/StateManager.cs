@@ -18,8 +18,8 @@ class StateManager {
     private int   m_STATE_NO_MAX;   //ステートの最大数
     private float m_StateTime;      //ステート内で使用する
 
+    private bool         m_useFixedUpdate = false;   //FixdUpdateで動くようにするか
     private UnityAction  m_fnAddDeltaTime;
-    public enum DeltaTimeType { DeltaTime, FixedDeltaTime }
 
     //各ステートの更新関数のポインタ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     private UnityAction[] m_fnIniteArr;   //初期化用
@@ -40,7 +40,8 @@ class StateManager {
         m_fnUpdateArr = aUdataFuncArr;
 
         //デルタタイム設定-----------------------------------------------------
-        if(aUseFixedUpdate) {
+        m_useFixedUpdate = aUseFixedUpdate;
+        if(m_useFixedUpdate) {
             m_fnAddDeltaTime = (() => { m_StateTime += Time.fixedDeltaTime; });
         } else {
             m_fnAddDeltaTime = (() => { m_StateTime += Time.deltaTime; });
@@ -48,6 +49,12 @@ class StateManager {
     }
     
     //公開関数/////////////////////////////////////////////////////////////////
+    //更新する関数を切り替える=================================================
+    public void DoWantFixdUpdate(bool aValue) {
+        m_useFixedUpdate = aValue;
+    }
+
+    
     //更新=====================================================================
     public void Update() {
 
@@ -56,7 +63,7 @@ class StateManager {
             m_StateNo     = m_NextStateNo;
             m_NextStateNo = -1; //Initを一回だけ呼ぶために-1を入れてる
             if(m_fnIniteArr[m_StateNo] != null) m_fnIniteArr[m_StateNo]();
-            m_StateTime = 0.0f; 
+            m_StateTime = 0.0f;
         }
         
         //ステート別のアップデート---------------------------------------------

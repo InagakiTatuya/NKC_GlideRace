@@ -46,27 +46,6 @@ public class GravityStatus {
 
 }
 
-// レイキャスター /////////////////////////////////////////////////////////////
-public class Raycaster {
-    public Vector3      origin;      //原点
-    public Vector3      direction;   //方向
-    public float        distance;    //長さ
-    public int          layerMask;   //マスク
-    public RaycastHit   hitData;
-
-    public bool Raycast() {
-        return Physics.Raycast(origin, direction, out hitData, distance, layerMask);
-    }
-    public bool Raycast(Vector3 aOri, Vector3 aDir, float aDis, int aMask) {
-        origin    = aOri;
-        direction = aDir;
-        distance  = aDis;
-        layerMask = aMask;
-        return Physics.Raycast(origin, direction, out hitData, distance, layerMask);
-    }
-
-}
-
 // 速度ステータス /////////////////////////////////////////////////////////////
 [System.Serializable]
 public class SpeedStatus {
@@ -85,7 +64,7 @@ public class SpeedStatus {
     }
 
     public void AddSeed(float v) {
-        seed  = Mathf.Min(seed + v, 16.0f); // 16 == pow(1/0.25,2)
+        seed  = Mathf.Min(seed + v, 16.0f); // 16 == pow(1 / 0.25, 2)
         value = Mathf.Pow(seed + 1, 0.25f) - 1;
     }
 
@@ -99,7 +78,24 @@ public class SpeedStatus {
 [System.Serializable]
 public class GliderStatus {
     public const float MAX = 100f;
+    public const float ADDVALUE = 10f;
+    public const float SUDVALUE = 1f;
     public float value;
+
+    public GliderStatus() {
+        value = MAX;
+    }
+
+    public void AddValue(float v) {
+        value += v;
+        if(value > MAX) value = MAX;
+    }
+
+    public void SubValue(float v) {
+        value -= v;
+        if(value < 0) value = 0;
+    }
+
 }
 
 // ヒートステータス ///////////////////////////////////////////////////////////
