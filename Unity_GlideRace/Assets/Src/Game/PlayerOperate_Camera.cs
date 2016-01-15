@@ -51,8 +51,8 @@ public partial class PlayerOperate : MonoBehaviour {
 
         //座標-----------------------------------------------------------------
         if(!m_fComPosLock) {
-            m_Camera.pos = Pos + VecRotationEx(CAM_OFFSET, m_handleDir.normalized,
-                                                Vector3.forward, Vector3.up);
+            m_Camera.pos = Pos + MyUtility.VecRotationEx(
+                CAM_OFFSET,m_handleDir.normalized,Vector3.forward, Vector3.up);
         }
         //回転-----------------------------------------------------------------
         if(!m_fComRotLock) {

@@ -58,6 +58,7 @@ public partial class PlayerOperate : MonoBehaviour {
     private bool          m_fDrift;       //ドリフト中
     private int           m_driftDir;     //ドリフト方向
     private Vector3       m_handleDir;    //ＸＺ空間上の移動方向
+    private Vector3       m_anglDir;      //ＸＹ空間上の高さ
     private Vector3       m_forward;      //移動方向
     private Vector3       m_modeFrwrd;    //モデルの正面
 
@@ -386,43 +387,6 @@ public partial class PlayerOperate : MonoBehaviour {
         Debug.Log("OnTrigger hit JumpTrigger");
         m_fJumpBoost = true;
     }
-
-    ///////////////////////////////////////////////////////////////////////////
-    //  ヘルパー関数
-    ///////////////////////////////////////////////////////////////////////////
-
-    //回転処理=================================================================
-    //　渡されたベクトルを３Ｄ回転させる
-    //  第１引数：回転させるベクトル
-    //  第２引数：回転させる量
-    //  第３引数：回転軸
-    //=========================================================================
-    private Vector3 VecRotation(Vector3 aVec, float aRot, Vector3 aAxis) {
-        float sin_r = Mathf.Sin(aRot / 2f);
-        float cos_r = Mathf.Cos(aRot / 2f);
-
-        Quaternion f = new Quaternion(aVec.x, aVec.y, aVec.z, 0.0f);
-        Quaternion q = new Quaternion(sin_r *  aAxis.x, sin_r *  aAxis.y, sin_r *  aAxis.z, cos_r);
-        Quaternion r = new Quaternion(sin_r * -aAxis.x, sin_r * -aAxis.y, sin_r * -aAxis.z, cos_r);
-        Quaternion qr = r * f * q;
-        return new Vector3(qr.x, qr.y, qr.z);
-    }
-
-    //回転処理=================================================================
-    //　渡されたベクトルを二つのベクトルのなす角の量で回転させる
-    //  第１引数：回転させるベクトル
-    //  第２引数：なす角を作るベクトル１
-    //  第３引数：なす角を作るベクトル２
-    //  第４引数：回転軸
-    //=========================================================================
-    private Vector3 VecRotationEx(Vector3 aVec, Vector3 aV1, Vector3 aV2, Vector3 aAxis) {
-        Vector3 vec   = aVec;
-        float   angle = Mathf.Acos(Vector3.Dot(aV1, aV2));
-        Vector3 acxis = Vector3.Cross(aV1, aV2);
-        float   pm    = (acxis.y < 0) ? -1 : +1;
-        return VecRotation(vec, angle, aAxis * pm);
-    }
-
 
     //=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=
     //ココより下は、デバック用 

@@ -74,7 +74,7 @@ public partial class PlayerOperate : MonoBehaviour {
         InputLock = true;
         //カメラ
         ComPosLock = true;
-        SetCamPos(Pos + VecRotationEx(
+        SetCamPos(Pos + MyUtility.VecRotationEx(
                                 CAM_OFFSET,
                                 m_handleDir.normalized, Vector3.forward,
                                 Vector3.up
