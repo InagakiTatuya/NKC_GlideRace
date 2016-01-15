@@ -348,8 +348,10 @@ public partial class PlayerOperate : MonoBehaviour {
     }
     //移動方向の適用===========================================================
     private void AppForwardFunc() {
+        /* テスト中
         m_forward = MyUtility.VecRotation(new Vector3(0.0f, m_anglDir.y, m_anglDir.x),
             Mathf.Atan2(m_handleDir.z, m_handleDir.x) - Mathf.PI/2f, Vector3.up);
+        */
     }
 
     //速度値の適用=============================================================
