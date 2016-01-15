@@ -27,9 +27,10 @@ public static class InputPad {
     //public static Vector2 AllAxisUp()   { } //開発中
     //public static Vector2 AllAxisDown() { } //Updateでまわさないと難しい
 
-    public static Vector2 Axis(int aNum) {
+	public static Vector2 Axis(int aNum = 1)
+	{
         string str = "P" + aNum;
-        return new Vector2(Input.GetAxis(str + HOR), Input.GetAxis(str + VER));
+        return new Vector2(Input.GetAxis(str + HOR), -Input.GetAxis(str + VER));
     }
 
     //決定・アクセル================================================================================
@@ -104,7 +105,7 @@ public static class InputPad {
     }
 
     // プレイヤー指定 ---------------------------------------------------------
-    public static void InputData(ref InputData outData, int aNum) {
+    public static void InputData(ref InputData outData, int aNum = 1) {
         if(outData == null) outData = new InputData();
         outData.axis     = InputPad.Axis(aNum);
         outData.accel    = InputPad.Accel(aNum);
@@ -114,7 +115,8 @@ public static class InputPad {
         outData.menu     = InputPad.Menu(aNum);
     }
 
-    public static void InputUpData(ref InputData outData, int aNum) {
+	public static void InputUpData(ref InputData outData, int aNum = 1)
+	{
         if(outData == null) outData = new InputData();
         outData.axis     = Vector2.zero;
         outData.accel    = InputPad.AccelUp(aNum);
@@ -124,7 +126,8 @@ public static class InputPad {
         outData.menu     = InputPad.MenuUp(aNum);
     }
 
-    public static void InputDownData(ref InputData outData, int aNum) {
+	public static void InputDownData(ref InputData outData, int aNum = 1)
+	{
         if(outData == null) outData = new InputData();
         outData.axis     = Vector2.zero;
         outData.accel    = InputPad.AccelDown(aNum);
