@@ -180,18 +180,16 @@ public partial class PlayerOperate : MonoBehaviour {
         //DriftFunc();  //ドリフト＊開発中
         GliderFunc(); //滑空    ＊未開発
 
-        AutoDirectionFunc();
-        WallCheck();
+        SlopeFunc();    //坂処理
+        WallCheck();    //壁チェック
         AppSpeedFunc();
 
         SearchAnchor();
 
         SpwanFunc();
 
-        CameraFixdUpdate();//カメラ
-
-        SendToHeadUpDisplay();
-    
+        CameraFixdUpdate();     //カメラ
+        SendToHeadUpDisplay();  //GUIにデータを渡す
     }
 
     //非公開関数///////////////////////////////////////////////////////////////
@@ -234,6 +232,9 @@ public partial class PlayerOperate : MonoBehaviour {
     
     //ジャンプ処理=============================================================
     private void JumpBoost() {
+        if(!m_fJumpBoost) return;
+
+        
 
     }
 
@@ -275,7 +276,7 @@ public partial class PlayerOperate : MonoBehaviour {
     //  足元のレイキャスト情報と移動先のレイキャスト情報から
     //  坂の角度を計算して移動先ベクトルを再設定する
     //=========================================================================
-    private void AutoDirectionFunc() {
+    private void SlopeFunc() {
         if(!m_fOnGround) return;
 
         bool fhit = false;
@@ -383,6 +384,7 @@ public partial class PlayerOperate : MonoBehaviour {
     ///////////////////////////////////////////////////////////////////////////
     public void OnChildTriggerForJump() {
         Debug.Log("OnTrigger hit JumpTrigger");
+        m_fJumpBoost = true;
     }
 
     ///////////////////////////////////////////////////////////////////////////

@@ -113,6 +113,20 @@ public class HeatStatus {
     }
 }
 
+// ジャンプステータス /////////////////////////////////////////////////////////
+[System.Serializable]
+public class JumpStatus {
+    public const float   ADDSPEEDSEED = 4f;
+    public const int     MAXCNT = 120;
+    public int frameCnt;
+
+    public JumpStatus() {
+        frameCnt = 0;
+    }
+
+
+}
+
 // ゴールデータ ///////////////////////////////////////////////////////////////
 [System.Serializable]
 public class GoalData {

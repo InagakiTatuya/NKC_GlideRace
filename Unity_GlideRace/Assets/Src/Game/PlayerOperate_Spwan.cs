@@ -45,7 +45,9 @@ public partial class PlayerOperate : MonoBehaviour {
         
         //コースに復帰する処理
         if(m_fRespwan) {
+            //ステートで分岐して処理する
             m_SpwanStep.Update();
+            //ステート変更
             if(m_SpwanStep.getState != m_RespwonStep) {
                 m_SpwanStep.SetNextState(m_RespwonStep);
             }
