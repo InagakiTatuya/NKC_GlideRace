@@ -38,6 +38,7 @@ public partial class PlayerOperate : MonoBehaviour {
     private RackState     m_Rack;         //ラックステート
     private float         m_wait;         //重さ
     private SpeedStatus   m_Speed;        //速度に関するステータス
+    private JumpStatus    m_Jump;         //ジャンプに関するステータス
     private GliderStatus  m_Glider;       //滑空に関するステータス
     private HeatStatus    m_Heat;         //ヒートに関するステータス
     private GoalData      m_GoalData;     //ゴールデータ
@@ -58,7 +59,7 @@ public partial class PlayerOperate : MonoBehaviour {
     private bool          m_fDrift;       //ドリフト中
     private int           m_driftDir;     //ドリフト方向
     private Vector3       m_handleDir;    //ＸＺ空間上の移動方向
-    private Vector3       m_anglDir;      //ＸＹ空間上の高さ
+    private Vector2       m_anglDir;      //ＸＹ空間上の高さ方向
     private Vector3       m_forward;      //移動方向
     private Vector3       m_modeFrwrd;    //モデルの正面
 
@@ -138,6 +139,7 @@ public partial class PlayerOperate : MonoBehaviour {
         m_Rack           = RackState.READY;
         m_wait           = 0;
         m_Speed          = new SpeedStatus(0.08f, 0.8f, 0.03f); //データベースから代入するように改良する
+        m_Jump           = new JumpStatus();
         m_Glider         = new GliderStatus();
         m_Heat           = new HeatStatus();
         m_GoalData       = new GoalData();
@@ -153,6 +155,7 @@ public partial class PlayerOperate : MonoBehaviour {
         m_fDrift     = false;
         m_driftDir   = 0;
         m_handleDir  = Forward;
+        m_anglDir    = Vector2.right;
         m_forward    = Forward;
         m_modeFrwrd  = Forward;
 
@@ -173,13 +176,15 @@ public partial class PlayerOperate : MonoBehaviour {
         InputDataReset();   //入力情報リセット
         SetInput();         //入力受け取り
 
+        GroundCheck();
         GravityFunc();
 
-        AccelFunc();
-        BrakeFunc();
-        HandleFunc();
+        AccelFunc();    //アクセル
+        BrakeFunc();    //ブレーキ
+        HandleFunc();   //ハンドル
         //DriftFunc();  //ドリフト＊開発中
-        GliderFunc(); //滑空    ＊未開発
+        JumpBoost();    //ジャンプ
+        GliderFunc();   //滑空
 
         SlopeFunc();    //坂処理
         WallCheck();    //壁チェック
@@ -201,11 +206,11 @@ public partial class PlayerOperate : MonoBehaviour {
     //アクセル・回転ドリフト処理===============================================
     //  PlayerOperate_Accele.cs に定義
 
-    //重力処理=================================================================
-    private void GravityFunc() {
+    //地面判定=================================================================
+    private void GroundCheck() {
 
         //地面接触判定
-        float dis = UNDERRAYDIS_MIN + (-1 * m_Gravity.fall);
+        float dis = UNDERRAYDIS_MIN + m_Gravity.fallValue;
         if(m_UnderRay.Raycast(Pos, Vector3.down, dis, GROUND_MASK)) {
             //着地
             m_fOnGround = true;
@@ -216,27 +221,46 @@ public partial class PlayerOperate : MonoBehaviour {
         } else {
             m_fOnGround = false;
         }
+    }
+
+    //重力処理=================================================================
+    private void GravityFunc() {
 
         //地面接触に対する処理
         if(m_fOnGround) {
             //地面から浮かす
             SetPosY = Mathf.Min(Pos.y + HOVER, m_UnderRay.hitData.point.y + HOVER);
-
         }
 
          //重力処理
         if(m_fUseGravity && !m_fOnGround) {
             m_Gravity.AddSeed();
-            SetPosY = Pos.y + m_Gravity.fall;
+            SetPosY = Pos.y - m_Gravity.fallValue;
         }
     }
     
     //ジャンプ処理=============================================================
     private void JumpBoost() {
         if(!m_fJumpBoost) return;
-
         
+        m_Jump.frameCnt++;  //ジャンプカウント
+        
+        //開始
+        if(m_Jump.frameCnt == 1) {
+            m_fUseGravity = false;
+            m_fJumpBoost  = true;
+        }
 
+        m_anglDir.x = Mathf.Cos(45f);
+        m_anglDir.y = Mathf.Sin(45f);
+
+        //ジャンプブースト終了
+        bool end =(m_Jump.frameCnt > JumpStatus.MAXCNT || m_fOnGround);
+        if(end) {
+            m_Jump.Reset();
+            m_fUseGravity = true;
+            m_fJumpBoost = false;
+        }
     }
 
     //グライダー処理===========================================================
@@ -287,7 +311,7 @@ public partial class PlayerOperate : MonoBehaviour {
         float sv = Mathf.Max(0.01f, m_Speed.value);
         m_FrontDownRay.origin    = Pos + (m_forward * sv) + (Vector3.up * FRONTRAYDIS_MIN);
         m_FrontDownRay.direction = Vector3.down;
-        m_FrontDownRay.distance  = (-1 * m_Gravity.fall) + FRONTRAYDIS_MIN;
+        m_FrontDownRay.distance  = m_Gravity.fallValue + FRONTRAYDIS_MIN;
         m_FrontDownRay.layerMask = GROUND_MASK;
         fhit = m_FrontDownRay.Raycast();
 
@@ -321,6 +345,11 @@ public partial class PlayerOperate : MonoBehaviour {
         } else {
             m_fHitWoll = false;
         }
+    }
+    //移動方向の適用===========================================================
+    private void AppForwardFunc() {
+        m_forward = MyUtility.VecRotation(new Vector3(0.0f, m_anglDir.y, m_anglDir.x),
+            Mathf.Atan2(m_handleDir.z, m_handleDir.x) - Mathf.PI/2f, Vector3.up);
     }
 
     //速度値の適用=============================================================

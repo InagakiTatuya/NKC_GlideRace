@@ -49,7 +49,7 @@ public partial class PlayerOperate : MonoBehaviour {
             //  ROTSTEPNEXT 未満　ROTSTEP1倍　／　ROTSTEPNEXT 以上　ROTSTEP2倍
             float rot = m_Speed.TURN * ((Mathf.Abs(m_handleSeed) < ROTSTEPNEXT) ? ROTSTEP1 : ROTSTEP2);
             Vector3 axis = new Vector3(0, -1, 0) * Mathf.Sign(m_handleSeed);
-            m_forward = m_modeFrwrd = m_handleDir = MyUtility.VecRotation(m_handleDir, rot, axis);
+            m_modeFrwrd = m_handleDir = MyUtility.VecRotation(m_handleDir, rot, axis);
         }
     }
 
@@ -81,17 +81,16 @@ public partial class PlayerOperate : MonoBehaviour {
             float cos_r = Mathf.Cos(rot / 2f);
             Vector3 axis = new Vector3(0, -1, 0) * m_driftDir;
 
-            Quaternion f = new Quaternion(m_forward.x, m_forward.y, m_forward.z, 0.0f);
+            Quaternion f = new Quaternion(m_handleDir.x, m_handleDir.y, m_handleDir.z, 0.0f);
             Quaternion q = new Quaternion(sin_r * axis.x, sin_r * axis.y, sin_r * axis.z, cos_r);
             Quaternion r = new Quaternion(sin_r * -axis.x, sin_r * -axis.y, sin_r * -axis.z, cos_r);
             Quaternion qr = r * f * q;
-            m_forward = new Vector3(qr.x, qr.y, qr.z).normalized;
+            m_handleDir = new Vector3(qr.x, qr.y, qr.z).normalized;
 
             //モデル方向
-            f = new Quaternion(m_forward.x, m_forward.y, m_forward.z, 0.0f);
+            f = new Quaternion(m_handleDir.x, m_handleDir.y, m_handleDir.z, 0.0f);
             qr = r * f * q; //もう一度回転させる
             m_modeFrwrd = new Vector3(qr.x, qr.y, qr.z).normalized;
-
 
             //------------------------------------------
         } else {

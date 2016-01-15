@@ -22,26 +22,26 @@ public enum RackState : int {
 [System.Serializable]
 public class GravityStatus {
     //公開静的変数
-    public static float STA_GRAVITY = -0.019f;
-    public static float STA_FALLMIN = -1.19f;
+    public static float STA_GRAVITY = 0.019f;
+    public static float STA_FALLMAX = 1.19f;
     //公開変数
     public float seed;      //重力加速の基礎となる値
-    public float fall;
+    public float fallValue;
 
     public GravityStatus() {
         seed = 0;
-        fall = 0;
+        fallValue = 0;
     }
 
     public void Reset() {
         seed = 0;
-        fall = 0;
+        fallValue = 0;
     }
 
     public void AddSeed() {
         seed++;
-        fall = STA_GRAVITY * seed;
-        fall = Mathf.Max(fall, STA_FALLMIN);
+        fallValue = STA_GRAVITY * seed;
+        fallValue = Mathf.Min(fallValue, STA_FALLMAX);
     }
 
 }
@@ -71,6 +71,22 @@ public class SpeedStatus {
     public void SubSeed(float v) {
         seed  = Mathf.Max(seed - v, 0.0f);
         value = Mathf.Pow(seed + 1, 0.25f) - 1;
+    }
+}
+
+// ジャンプステータス /////////////////////////////////////////////////////////
+[System.Serializable]
+public class JumpStatus {
+    public const float   ADDSPEEDSEED = 4f;
+    public const int     MAXCNT = 120;
+    public int frameCnt;
+
+    public JumpStatus() {
+        frameCnt = 0;
+    }
+
+    public void Reset() {
+        frameCnt = 0;
     }
 }
 
@@ -113,19 +129,7 @@ public class HeatStatus {
     }
 }
 
-// ジャンプステータス /////////////////////////////////////////////////////////
-[System.Serializable]
-public class JumpStatus {
-    public const float   ADDSPEEDSEED = 4f;
-    public const int     MAXCNT = 120;
-    public int frameCnt;
 
-    public JumpStatus() {
-        frameCnt = 0;
-    }
-
-
-}
 
 // ゴールデータ ///////////////////////////////////////////////////////////////
 [System.Serializable]
