@@ -16,14 +16,22 @@ using System.Collections;
 
 public partial class PlayerOperate : MonoBehaviour {
 
+    private bool        m_fInputLock; //入力を受け取りをさせない
+    private InputData   m_Input;      //押しているか
+    private InputData   m_InputDown;  //押した瞬間
+    
+    //プロパティ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    public bool InputLock { get { return m_fInputLock;  }
+                            set { m_fInputLock = value; } }
+
     //初期化===================================================================
-    private void InputInit() {
+    private void InputStart() {
         m_fInputLock = false;
         m_Input      = new InputData();
         m_InputDown  = new InputData();
     }
 
-    //入力受け取り
+    //入力受け取り=============================================================
     private void SetInput() {
         if(m_fInputLock) return;
     #if PC_DEBUG

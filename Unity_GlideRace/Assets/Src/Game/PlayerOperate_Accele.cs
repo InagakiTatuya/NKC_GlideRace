@@ -46,7 +46,7 @@ public partial class PlayerOperate : MonoBehaviour {
 
         if((int)m_handleSeed != 0) {
             // Seed が 一定以上になると　急に曲がる
-            //  ROTSTEPNEXT 未満　ROTSTEP1の倍　／　ROTSTEPNEXT 以上　ROTSTEP2の倍
+            //  ROTSTEPNEXT 未満　ROTSTEP1倍　／　ROTSTEPNEXT 以上　ROTSTEP2倍
             float rot = m_Speed.TURN * ((Mathf.Abs(m_handleSeed) < ROTSTEPNEXT) ? ROTSTEP1 : ROTSTEP2);
             Vector3 axis = new Vector3(0, -1, 0) * Mathf.Sign(m_handleSeed);
             m_forward = m_modeFrwrd = m_handleDir = VecRotation(m_handleDir, rot, axis);

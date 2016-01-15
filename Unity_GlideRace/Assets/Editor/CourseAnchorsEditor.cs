@@ -214,7 +214,7 @@ public class CourseAnchorsEditor : Editor {
     //SpawnPoint用ハンドル描画=================================================
     private void SpawnPointHandle(SerializedProperty aspElement, int aIndex) {
         SerializedProperty spAnc   = aspElement.FindPropertyRelative("m_point");
-        SerializedProperty spDir   = aspElement.FindPropertyRelative("m_dirdirection");
+        //SerializedProperty spDir   = aspElement.FindPropertyRelative("m_dirdirection");
 
         spAnc.vector3Value = Handles.PositionHandle(spAnc.vector3Value, Quaternion.identity);
         Handles.Label(spAnc.vector3Value, "I[" + aIndex + "]", EditorStyles.whiteBoldLabel);
