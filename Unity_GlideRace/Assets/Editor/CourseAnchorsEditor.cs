@@ -4,7 +4,6 @@
 //  CourseAnchorsを扱いやすくするためのカスタマイズ
 //#############################################################################
 
-
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEditor;

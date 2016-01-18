@@ -49,7 +49,7 @@ public partial class PlayerOperate : MonoBehaviour {
             //  ROTSTEPNEXT 未満　ROTSTEP1倍　／　ROTSTEPNEXT 以上　ROTSTEP2倍
             float rot = m_Speed.TURN * ((Mathf.Abs(m_handleSeed) < ROTSTEPNEXT) ? ROTSTEP1 : ROTSTEP2);
             Vector3 axis = new Vector3(0, -1, 0) * Mathf.Sign(m_handleSeed);
-            m_forward = m_modeFrwrd = m_handleDir = MyUtility.VecRotation(m_handleDir, rot, axis);
+            m_modeFrwrd = m_handleDir = MyUtility.VecRotation(m_handleDir, rot, axis);
         }
     }
 

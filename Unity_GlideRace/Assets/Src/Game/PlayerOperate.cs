@@ -188,6 +188,7 @@ public partial class PlayerOperate : MonoBehaviour {
 
         SlopeFunc();    //坂処理
         WallCheck();    //壁チェック
+        AppForwardFunc();
         AppSpeedFunc();
 
         SearchAnchor();
@@ -208,15 +209,16 @@ public partial class PlayerOperate : MonoBehaviour {
 
     //地面判定=================================================================
     private void GroundCheck() {
-
+        
         //地面接触判定
         float dis = UNDERRAYDIS_MIN + m_Gravity.fallValue;
         if(m_UnderRay.Raycast(Pos, Vector3.down, dis, GROUND_MASK)) {
             //着地
             m_fOnGround = true;
             m_Gravity.Reset();
-            m_forward.y = 0;
-            m_forward.Normalize();
+            m_anglDir = Vector2.right;
+            //m_forward.y = 0;
+            //m_forward.Normalize();
 
         } else {
             m_fOnGround = false;
@@ -311,7 +313,7 @@ public partial class PlayerOperate : MonoBehaviour {
         float sv = Mathf.Max(0.01f, m_Speed.value);
         m_FrontDownRay.origin    = Pos + (m_forward * sv) + (Vector3.up * FRONTRAYDIS_MIN);
         m_FrontDownRay.direction = Vector3.down;
-        m_FrontDownRay.distance  = m_Gravity.fallValue + FRONTRAYDIS_MIN;
+        m_FrontDownRay.distance  = m_Gravity.fallValue + FRONTRAYDIS_MIN + UNDERRAYDIS_MIN;
         m_FrontDownRay.layerMask = GROUND_MASK;
         fhit = m_FrontDownRay.Raycast();
 
@@ -324,7 +326,10 @@ public partial class PlayerOperate : MonoBehaviour {
 
         //移動方向修正
         if(fSlope) {
-            m_forward = (m_FrontDownRay.hitData.point - m_UnderRay.hitData.point).normalized;
+            Vector3 vec = (m_FrontDownRay.hitData.point - m_UnderRay.hitData.point).normalized;
+            m_anglDir.y = vec.y;
+            m_anglDir.x = Mathf.Cos(Mathf.Asin(vec.y));
+            m_anglDir.Normalize();
         }
 
     }
@@ -348,10 +353,10 @@ public partial class PlayerOperate : MonoBehaviour {
     }
     //移動方向の適用===========================================================
     private void AppForwardFunc() {
-        /* テスト中
         m_forward = MyUtility.VecRotation(new Vector3(0.0f, m_anglDir.y, m_anglDir.x),
             Mathf.Atan2(m_handleDir.z, m_handleDir.x) - Mathf.PI/2f, Vector3.up);
-        */
+
+        Debug.DrawRay(Pos, m_forward, Color.cyan, Mathf.Max(0.1f, m_Speed.value));
     }
 
     //速度値の適用=============================================================
