@@ -64,8 +64,8 @@ public class SpeedStatus {
     }
 
     public void AddSeed(float v) {
-        seed  = Mathf.Min(seed + v, 16.0f); // 16 == pow(1 / 0.25, 2)
-        value = Mathf.Pow(seed + 1, 0.25f) - 1;
+        seed  = Mathf.Min(seed + v, 16.0f); // 16 == pow(4, 2)
+        value = Mathf.Pow(seed + 1, 0.25f) - 1; //0.25 == sqar(4)
     }
 
     public void SubSeed(float v) {
