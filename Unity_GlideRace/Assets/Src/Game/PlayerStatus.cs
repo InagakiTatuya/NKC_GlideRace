@@ -10,7 +10,9 @@
 using UnityEngine;
 using System.Collections;
 
-// ステート ///////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+// ステート 
+///////////////////////////////////////////////////////////////////////////////
 public enum RackState : int {
     READY = 0,
     RACK1 = 1,
@@ -18,7 +20,9 @@ public enum RackState : int {
     GOAL  = 3,
 }
 
-// 重力ステータス /////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+// 重力ステータス 
+///////////////////////////////////////////////////////////////////////////////
 [System.Serializable]
 public class GravityStatus {
     //公開静的変数
@@ -46,39 +50,78 @@ public class GravityStatus {
 
 }
 
-// 速度ステータス /////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+// 速度ステータス 
+///////////////////////////////////////////////////////////////////////////////
 [System.Serializable]
 public class SpeedStatus {
-    public float ACC   = 0.1f; //Acceleration
-    public float MAX   = 1f;
-    public float TURN  = 0.1f;
-    public float seed  = 0f;
-    public float value = 0f;
+    public const float MAXLEVEL  = 4;
+    public const float MATHINDEX = 2f; //指数
 
-    public SpeedStatus(float aACC, float aMAX, float aTURN) {
-        ACC   = aACC;
-        MAX   = aMAX;
-        TURN  = aTURN;
-        seed  = 0f;
-        value = 0f;
+    public float ACC      = 0.1f; //Acceleration
+    public float TURN     = 0.1f;  
+    public float MAXSEED  = 1f;
+    private float m_seed  = 0f;    //基準となる数値
+    private float m_level = 1f;
+    private float m_value = 0f;    //実際の数値
+
+    public float seed  { get{ return m_seed;  } }
+    public float level { get{ return m_level; } }
+    public float value { get{ return m_value; } }
+
+    public SpeedStatus(float aACC, float aTURN, float aMAXSEED) {
+        ACC      = aACC;
+        TURN     = aTURN;
+        MAXSEED  = aMAXSEED;
+        m_seed   = 0f;
+        m_level  = 1f;
+        m_value  = 0f;
     }
 
+    public void Reset() {
+        m_seed   = 0f;
+        m_level  = 1f;
+        m_value  = 0f;
+    }
+
+    //レベル===================================================================
+    public void AddLevel(float v) {
+        m_level = Mathf.Min(m_level + v, MAXLEVEL);
+    }
+    public void SubLevel(float v) {
+        m_level = Mathf.Max(m_level - v, 1.0f);
+    }
+    public void SetLevel(float v) {
+        m_level = Mathf.Max(Mathf.Min(v, MAXLEVEL), 1.0f);
+    }
+    //シード===================================================================
     public void AddSeed(float v) {
-        seed  = Mathf.Min(seed + v, 16.0f); // 16 == pow(4, 2)
-        value = Mathf.Pow(seed + 1, 0.25f) - 1; //0.25 == sqar(4)
+        m_seed  = Mathf.Min(seed + v, MAXSEED);
+        m_value = m_level * Mathf.Pow(seed * (1f / MAXSEED), MATHINDEX);
     }
 
     public void SubSeed(float v) {
-        seed  = Mathf.Max(seed - v, 0.0f);
-        value = Mathf.Pow(seed + 1, 0.25f) - 1;
+        m_seed  = Mathf.Max(seed - v, 0.0f);
+        m_value = m_level * Mathf.Pow(seed * (1f / MAXSEED), MATHINDEX);
     }
+
+    //デバック用\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\
+    public string DebugDrawString() {
+        string s = "";
+        s += "seed  = " + m_seed + "\nLevel = " + m_level +
+             "\nVaue = " + m_value;
+        return s;
+    }
+
 }
 
-// ジャンプステータス /////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+// ジャンプステータス 
+///////////////////////////////////////////////////////////////////////////////
 [System.Serializable]
 public class JumpStatus {
     public const float   ADDSPEEDSEED = 4f;
-    public const int     MAXCNT = 120;
+    public const int     MAXCNT = 60;
     public int frameCnt;
 
     public JumpStatus() {
@@ -90,7 +133,9 @@ public class JumpStatus {
     }
 }
 
-// グライダーステータス ///////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+// グライダーステータス 
+///////////////////////////////////////////////////////////////////////////////
 [System.Serializable]
 public class GliderStatus {
     public const float MAX = 100f;
@@ -114,7 +159,9 @@ public class GliderStatus {
 
 }
 
-// ヒートステータス ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+// ヒートステータス 
+///////////////////////////////////////////////////////////////////////////////
 [System.Serializable]
 public class HeatStatus {
     public const  float     MAX          = 100f;
@@ -131,7 +178,9 @@ public class HeatStatus {
 
 
 
-// ゴールデータ ///////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+// ゴールデータ 
+///////////////////////////////////////////////////////////////////////////////
 [System.Serializable]
 public class GoalData {
     public int   ranking;

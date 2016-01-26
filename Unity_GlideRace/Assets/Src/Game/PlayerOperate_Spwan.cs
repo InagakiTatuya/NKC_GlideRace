@@ -117,9 +117,9 @@ public partial class PlayerOperate : MonoBehaviour {
     private void SpawnStep03Update() {
         //記憶したアンカーデータから復帰用座標にキャラを移動
         SpawnPoint data  = m_CouresAncs.GetSpw(m_AncDataGround.groupNo);
-        Pos              = data.point + new Vector3(0, 6f, 0);
-        m_Speed.seed     = 0f;
-        m_handleDir      = m_forward = m_modeFrwrd = data.dirdirection;
+        Pos          = data.point + new Vector3(0, 6f, 0);
+        m_handleDir = m_forward = m_modeFrwrd = data.dirdirection;
+        m_Speed.Reset();
 
         ModelScale = ModelScale * 1.2f;
         

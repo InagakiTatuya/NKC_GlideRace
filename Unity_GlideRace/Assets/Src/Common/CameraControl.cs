@@ -134,6 +134,12 @@ public class CameraControl : MonoBehaviour {
 
         DoWantLocalPos(false);
         DoWantLocalRot(false);
+
+        Vector3 pos = Vector3.zero;
+
+        m_Pos = m_tarPos = ((m_isLocalPos) ? transform.localPosition : transform.position);
+        m_At  = m_tarAt  = transform.forward;
+        m_Up  = m_tarUp  = transform.up;
     }
 	
 

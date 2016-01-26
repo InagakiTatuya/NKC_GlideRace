@@ -138,7 +138,7 @@ public partial class PlayerOperate : MonoBehaviour {
         //ステータス
         m_Rack           = RackState.READY;
         m_wait           = 0;
-        m_Speed          = new SpeedStatus(0.08f, 0.8f, 0.03f); //データベースから代入するように改良する
+        m_Speed          = new SpeedStatus(0.08f, 0.03f, 16f); //データベースから代入するように改良する
         m_Jump           = new JumpStatus();
         m_Glider         = new GliderStatus();
         m_Heat           = new HeatStatus();
@@ -212,17 +212,17 @@ public partial class PlayerOperate : MonoBehaviour {
         
         //地面接触判定
         float dis = UNDERRAYDIS_MIN + m_Gravity.fallValue;
-        if(m_UnderRay.Raycast(Pos, Vector3.down, dis, GROUND_MASK)) {
-            //着地
-            m_fOnGround = true;
+        bool  hit = m_UnderRay.Raycast(Pos, Vector3.down, dis, GROUND_MASK);
+        
+        //接触した瞬間の処理
+        if(hit && !m_fOnGround) {
             m_Gravity.Reset();
             m_anglDir = Vector2.right;
-            //m_forward.y = 0;
-            //m_forward.Normalize();
-
-        } else {
-            m_fOnGround = false;
         }
+
+        //地面接触判定
+        m_fOnGround = hit;
+        
     }
 
     //重力処理=================================================================
@@ -249,35 +249,46 @@ public partial class PlayerOperate : MonoBehaviour {
         
         //開始
         if(m_Jump.frameCnt == 1) {
-            m_fUseGravity = false;
+            //フラグ
             m_fJumpBoost  = true;
+            //速度の制御
+            m_Speed.AddLevel(1f);
+            m_Speed.AddSeed(m_Speed.MAXSEED);
         }
 
-        m_anglDir.x = Mathf.Cos(45f);
-        m_anglDir.y = Mathf.Sin(45f);
+        m_Speed.SubLevel(1f / JumpStatus.MAXCNT);
 
+        //ジャンプブースト終了条件
+        //  JumpCnt が一定数以上なったら
+        bool end = (m_Jump.frameCnt >= JumpStatus.MAXCNT);
+        
         //ジャンプブースト終了
-        bool end =(m_Jump.frameCnt > JumpStatus.MAXCNT || m_fOnGround);
         if(end) {
+            Debug.Log("end Boost");
+            //ジャンプ処理
             m_Jump.Reset();
-            m_fUseGravity = true;
+            //フラグ
             m_fJumpBoost = false;
+            //速度の制御
+            m_Speed.SetLevel(1.0f);
         }
     }
 
     //グライダー処理===========================================================
     private void GliderFunc() {
-        
+        //グラインドゲージ回復
+        if(m_fOnGround) {
+            m_Glider.AddValue(GliderStatus.ADDVALUE);
+        }
+
+        //以下の条件化では、滑空処理を行わない
+        if(m_fJumpBoost || m_fOnGround) return;
+
         //滑空開始
         if(m_Input.glide && !m_fGliding && !m_fOnGround) {
             m_fUseGravity = false;
             m_fGliding    = true;
             //[グライダーエフェクト発生処理をここに書く]
-        }
-
-        //グラインドゲージ回復
-        if(m_fOnGround) {
-            m_Glider.AddValue(GliderStatus.ADDVALUE);
         }
 
         //ココから先滑空処理---------------------------------------------------
@@ -351,6 +362,32 @@ public partial class PlayerOperate : MonoBehaviour {
             m_fHitWoll = false;
         }
     }
+
+    //壁の処理=================================================================
+    //  壁に当たったときの処理をする
+    //=========================================================================
+
+    private const int FALTERTIME = 10; //ひるみ時間
+    private int m_falterTimeCnt; //ひるみ時間
+
+    private void WallFunc() {
+        //数フレーム左右入力を拘束する
+        //m_handleDir を修正
+
+        if(!m_fHitWoll) return;
+
+        if(m_falterTimeCnt == 1) {
+
+        }
+
+
+        Vector3 n = m_FrontRay.hitData.normal;
+        m_handleDir = m_forward - 2 * Vector3.Dot(m_forward, n) * n;
+        m_handleDir.y = 0;
+        m_handleDir.Normalize();
+
+    }
+
     //移動方向の適用===========================================================
     private void AppForwardFunc() {
         m_forward = MyUtility.VecRotation(new Vector3(0.0f, m_anglDir.y, m_anglDir.x),
@@ -424,10 +461,10 @@ public partial class PlayerOperate : MonoBehaviour {
         m_fJumpBoost = true;
     }
 
-    //=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=
-    //ココより下は、デバック用 
-    //=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=
-#if UNITY_EDITOR
+//=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=
+//ココより下は、デバック用 
+//=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=
+#if UNITY_EDITOR_
     //GUI
     void OnGUI() {
         GUILayout.BeginVertical(GUI.skin.box);
@@ -437,6 +474,9 @@ public partial class PlayerOperate : MonoBehaviour {
         if(GUILayout.Button("To " + System.Enum.GetName(typeof(RackState), 2))) { m_Rack = (RackState)2; }
         if(GUILayout.Button("To " + System.Enum.GetName(typeof(RackState), 3))) { m_Rack = (RackState)3; }
         GUILayout.EndVertical();
+
+        GUILayout.Label(m_Speed.DebugDrawString());
+
     }
 
 
