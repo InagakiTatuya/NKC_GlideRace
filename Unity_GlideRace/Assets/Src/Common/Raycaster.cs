@@ -13,17 +13,20 @@ public class Raycaster {
     public Vector3      direction;   //方向
     public float        distance;    //長さ
     public int          layerMask;   //マスク
-    public RaycastHit   hitData;
+    public bool         hit;         //接触したか
+    public RaycastHit   hitData;     //接触したデータ
 
     public bool Raycast() {
-        return Physics.Raycast(origin, direction, out hitData, distance, layerMask);
+        hit = Physics.Raycast(origin, direction, out hitData, distance, layerMask);
+        return hit;
     }
     public bool Raycast(Vector3 aOri, Vector3 aDir, float aDis, int aMask) {
         origin    = aOri;
         direction = aDir;
         distance  = aDis;
         layerMask = aMask;
-        return Physics.Raycast(origin, direction, out hitData, distance, layerMask);
+        hit       = Physics.Raycast(origin, direction, out hitData, distance, layerMask);
+        return hit;
     }
 
 }
