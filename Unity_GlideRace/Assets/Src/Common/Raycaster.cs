@@ -16,10 +16,34 @@ public class Raycaster {
     public bool         hit;         //接触したか
     public RaycastHit   hitData;     //接触したデータ
 
+    //コンストラクタ===========================================================
+    public Raycaster() {
+        origin      = new Vector3();
+        direction   = new Vector3(); 
+        distance    = 0f; 
+        layerMask   = 0;
+        hit         = false;
+        hitData     = new RaycastHit();
+    }
+
+    //リセット=================================================================
+    //  パロメータを初期状態にします
+    //=========================================================================
+    public void Reset() {
+        origin      = new Vector3();
+        direction   = new Vector3(); 
+        distance    = 0f; 
+        layerMask   = 0;
+        hit         = false;
+        hitData     = new RaycastHit();
+    }
+
+    //レイキャスト=============================================================
     public bool Raycast() {
         hit = Physics.Raycast(origin, direction, out hitData, distance, layerMask);
         return hit;
     }
+
     public bool Raycast(Vector3 aOri, Vector3 aDir, float aDis, int aMask) {
         origin    = aOri;
         direction = aDir;
