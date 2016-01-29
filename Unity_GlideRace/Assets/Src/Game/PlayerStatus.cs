@@ -1,8 +1,8 @@
 ﻿//#############################################################################
 //  最終更新者：稲垣達也
-//　最終更新日：2015/11/04
+//  最終更新日：2015/11/04
 //
-//　プレイヤーキャラクターのステータスで使うクラスを複数定義する
+//  プレイヤーキャラクターのステータスで使うクラスを複数定義する
 //
 //#############################################################################
 
@@ -96,12 +96,12 @@ public class SpeedStatus {
     }
     //シード===================================================================
     public void AddSeed(float v) {
-        m_seed  = Mathf.Min(seed + v, MAXSEED);
+        m_seed  = Mathf.Max(0.0f, Mathf.Min(seed + v, MAXSEED));
         m_value = m_level * Mathf.Pow(seed * (1f / MAXSEED), MATHINDEX);
     }
 
     public void SubSeed(float v) {
-        m_seed  = Mathf.Max(seed - v, 0.0f);
+        m_seed  = Mathf.Max(0.0f, Mathf.Min(seed - v, MAXSEED));
         m_value = m_level * Mathf.Pow(seed * (1f / MAXSEED), MATHINDEX);
     }
 

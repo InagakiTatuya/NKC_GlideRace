@@ -45,11 +45,11 @@ public partial class PlayerOperate : MonoBehaviour {
         if(m_Input.axis.x > -0.1f && 0.1f > m_Input.axis.x) { m_handleSeed = 0.0f; }
 
         if((int)m_handleSeed != 0) {
-            // Seed が 一定以上になると　急に曲がる
-            //  ROTSTEPNEXT 未満　ROTSTEP1倍　／　ROTSTEPNEXT 以上　ROTSTEP2倍
+            // Seed が 一定以上になると  急に曲がる
+            //  ROTSTEPNEXT 未満  ROTSTEP1倍  ／  ROTSTEPNEXT 以上  ROTSTEP2倍
             float rot = m_Speed.TURN * ((Mathf.Abs(m_handleSeed) < ROTSTEPNEXT) ? ROTSTEP1 : ROTSTEP2);
             Vector3 axis = new Vector3(0, -1, 0) * Mathf.Sign(m_handleSeed);
-            m_modeFrwrd = m_handleDir = MyUtility.VecRotation(m_handleDir, rot, axis);
+            m_modeFrwrd = m_handleDir = MyUtility.Vec3DRotation(m_handleDir, rot, axis);
         }
     }
 

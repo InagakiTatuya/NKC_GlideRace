@@ -12,14 +12,28 @@ public class MyUtility {
     ///////////////////////////////////////////////////////////////////////////
     //  回転処理
     ///////////////////////////////////////////////////////////////////////////
+    //回転処理=================================================================
+    //  渡されたベクトルを２Ｄ回転させる
+    //  第１引数：回転させるベクトル
+    //  第２引数：回転させる量
+    //=========================================================================
+    public static Vector3 Vec3DRotation(Vector2 aVec, float aRot) {
+        Vector2 v = aVec;
+        float sin_r = Mathf.Sin(aRot);
+        float cos_r = Mathf.Cos(aRot);
+
+        v.x = aVec.x * cos_r - aVec.y * sin_r;
+        v.y = aVec.x * sin_r + aVec.y * cos_r;
+        return v;
+    }
 
     //回転処理=================================================================
-    //　渡されたベクトルを３Ｄ回転させる
+    //  渡されたベクトルを３Ｄ回転させる
     //  第１引数：回転させるベクトル
     //  第２引数：回転させる量
     //  第３引数：回転軸
     //=========================================================================
-    public static Vector3 VecRotation(Vector3 aVec, float aRot, Vector3 aAxis) {
+    public static Vector3 Vec3DRotation(Vector3 aVec, float aRot, Vector3 aAxis) {
         float sin_r = Mathf.Sin(aRot / 2f);
         float cos_r = Mathf.Cos(aRot / 2f);
 
@@ -31,17 +45,17 @@ public class MyUtility {
     }
 
     //回転処理=================================================================
-    //　渡されたベクトルを二つのベクトルのなす角の量で回転させる
+    //  渡されたベクトルを二つのベクトルのなす角の量で回転させる
     //  第１引数：回転させるベクトル
     //  第２引数：なす角を作るベクトル１
     //  第３引数：なす角を作るベクトル２
     //  第４引数：回転軸
     //=========================================================================
-    public static Vector3 VecRotationEx(Vector3 aVec, Vector3 aV1, Vector3 aV2, Vector3 aAxis) {
+    public static Vector3 Vec3DRotationEx(Vector3 aVec, Vector3 aV1, Vector3 aV2, Vector3 aAxis) {
         Vector3 vec   = aVec;
         float   angle = Mathf.Acos(Vector3.Dot(aV1, aV2));
         Vector3 acxis = Vector3.Cross(aV1, aV2);
         float   pm    = (acxis.y < 0) ? -1 : +1;
-        return VecRotation(vec, angle, aAxis * pm);
+        return Vec3DRotation(vec, angle, aAxis * pm);
     }
 }

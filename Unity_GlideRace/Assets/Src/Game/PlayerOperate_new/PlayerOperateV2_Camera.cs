@@ -9,7 +9,7 @@ using UnityEngine;
 using System.Collections;
 
 
-public partial class PlayerOperate : MonoBehaviour {
+public partial class PlayerOperateV2 : BaseObject {
     
     private Vector3         CAM_OFFSET = new Vector3(0, 4, -9);
     private CameraControl   m_Camera;
@@ -51,7 +51,7 @@ public partial class PlayerOperate : MonoBehaviour {
 
         //座標-----------------------------------------------------------------
         if(!m_fComPosLock) {
-            m_Camera.pos = Pos + MyUtility.Vec3DRotationEx(
+            m_Camera.pos = traPos + MyUtility.Vec3DRotationEx(
                 CAM_OFFSET,m_handleDir.normalized,Vector3.forward, Vector3.up);
         }
         //回転-----------------------------------------------------------------
@@ -61,5 +61,11 @@ public partial class PlayerOperate : MonoBehaviour {
         }
     }
 
-    
+    //GUI更新==================================================================
+    //  現在のステートをHeadUpDisplayに渡す
+    //=========================================================================
+    private void SendToHeadUpDisplay() {
+        m_HUD.SetGaugeGlider(m_Glider.value / GliderStatus.MAX);
+        m_HUD.SetGaugeHeat  (m_Heat.value   / HeatStatus.MAX);
+    }
 }

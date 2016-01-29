@@ -4,8 +4,6 @@
 //  プレイヤーの操作と制御
 //
 //#############################################################################
-
-
 using UnityEngine;
 using System.Collections;
 
@@ -390,7 +388,7 @@ public partial class PlayerOperate : MonoBehaviour {
 
     //移動方向の適用===========================================================
     private void AppForwardFunc() {
-        m_forward = MyUtility.VecRotation(new Vector3(0.0f, m_anglDir.y, m_anglDir.x),
+        m_forward = MyUtility.Vec3DRotation(new Vector3(0.0f, m_anglDir.y, m_anglDir.x),
             Mathf.Atan2(m_handleDir.z, m_handleDir.x) - Mathf.PI/2f, Vector3.up);
 
         Debug.DrawRay(Pos, m_forward, Color.cyan, Mathf.Max(0.1f, m_Speed.value));
