@@ -10,11 +10,14 @@ using System.Collections;
 
 
 public partial class PlayerOperateV2 : BaseObject {
-    
-    private Vector3         CAM_OFFSET = new Vector3(0, 4, -9);
-    private CameraControl   m_Camera;
-    private bool            m_fComPosLock;
-    private bool            m_fComRotLock;
+    //特殊処理関数
+    public delegate void CameraSpecialFunc(CameraControl cam);
+
+    private Vector3             CAM_OFFSET = new Vector3(0, 4, -9);
+    private CameraControl       m_Camera;
+    private bool                m_fComPosLock;
+    private bool                m_fComRotLock;
+    private CameraSpecialFunc   m_fnCamSpecialFunc;
     
     //プロパティ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     public bool ComPosLock { get { return m_fComPosLock; }
@@ -22,6 +25,11 @@ public partial class PlayerOperateV2 : BaseObject {
     
     public bool ComRotLock { get { return m_fComRotLock; }
                              set { m_fComRotLock = value; } }
+
+    //特殊処理関数設定=========================================================
+    public void SetCamSpecialFunc(CameraSpecialFunc afnFunc) {
+        m_fnCamSpecialFunc = afnFunc;
+    }
     
     //ステータス///////////////////////////////////////////////////////////////
     private Vector3 GetCamPos() { return m_Camera.transform.position; } 
@@ -48,6 +56,12 @@ public partial class PlayerOperateV2 : BaseObject {
 
     //更新/////////////////////////////////////////////////////////////////////
     private void CameraFixdUpdate() {
+        
+        //特殊処理-------------------------------------------------------------
+        if(m_fnCamSpecialFunc != null) {
+            m_fnCamSpecialFunc(m_Camera);
+            return;
+        }
 
         //座標-----------------------------------------------------------------
         if(!m_fComPosLock) {
