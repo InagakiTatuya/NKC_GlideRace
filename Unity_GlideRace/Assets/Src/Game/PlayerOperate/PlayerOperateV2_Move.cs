@@ -79,15 +79,21 @@ public partial class PlayerOperateV2 : BaseObject {
     private void SpeedFunc() {
         float addSeed = 0;
         
-        //アクセル
-        if(m_Input.accel) { 
+        //加速
+        bool up = (m_Input.accel);
+        if(up) {
             addSeed = m_Speed.ACC;
-        }else {
+        }
+
+        //減速
+        bool dwon = (!m_Input.accel && m_NowState[STATE_OnGround]);
+        if(dwon) {
             addSeed = -m_Speed.ACC * 1.5f;
         }
 
-        //ブレーキ
-        if(m_Input.brake) {
+        //急激な減速（ブレーキ）
+        bool hdwn = (m_Input.brake && !m_NowState.Or(STATE_Boost, STATE_Glide));
+        if(hdwn) {
             addSeed = -m_Speed.ACC * 3.3f;
         }
 
