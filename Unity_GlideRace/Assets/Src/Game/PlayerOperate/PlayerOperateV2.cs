@@ -9,7 +9,7 @@ using System.Collections;
 
 public partial class PlayerOperateV2 : BaseObject {
     //Inspecterで編集^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    [SerializeField] public int m_plyNum = 1;   //プレイヤー番号
+    [SerializeField] public int m_plyNo = 1;   //プレイヤー番号
 
     //非公開変数^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     //子オブジェクトの参照
@@ -49,20 +49,23 @@ public partial class PlayerOperateV2 : BaseObject {
     public const int STATE_HighHeat      = 11; //ハイヒート状態
     public const int STATE_Respwan       = 12; //復活
     public const int STATE_ReverseRun    = 13; //逆走
+    public const int STATE_Turn          = 14; //ターン
 
     //トリガーヒット^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     //  m_TrgState で使用する
     public const int TRGGER_Boost        = 16;
     public const int TRGGER_Jump         = 17;
     public const int TRGGER_Heat         = 18;
+    public const int TRGGER_Turn         = 19;
 
     //その他の変数^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    //アクション          PlayerOperate_Action.cs に定義
+    //アクション          PlayerOperateV2_Action.cs に定義
     //カメラを管理        PlayerOperateV2_Camera.cs に定義
-    //入力情報            PlayerOperate_Input.cs に定義
-    //移動方向            PlayerOperate_Move.cs に定義
-    //プレイヤーのカメラ  PlayerOperate_Camera.cs に定義
-    //コースに復帰関係    PlayerOerate_Spwan.cs に定義
+    //入力情報            PlayerOperateV2_Input.cs に定義
+    //移動方向            PlayerOperateV2_Move.cs に定義
+    //プレイヤーのカメラ  PlayerOperateV2_Camera.cs に定義
+    //コースに復帰        PlayerOerateV2_Spwan.cs に定義
+    //ターン              PlayerOerateV2_Turn.cs に定義
 
     //簡略プロパティ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     private Vector3 ModelScale {
@@ -70,10 +73,15 @@ public partial class PlayerOperateV2 : BaseObject {
         get { return m_Model.localScale; }
     }
 
+    //ラック変更===============================================================
+    private void SetRack(RackState aRackState) {
+        m_Rack = aRackState;
+    }
+
     //初期化===================================================================
     void Awake() {
         //リネーム
-        gameObject.name = "Player" + m_plyNum.ToString("00");
+        gameObject.name = "Player" + m_plyNo.ToString("00");
     }
 
     void Start() {
@@ -107,6 +115,7 @@ public partial class PlayerOperateV2 : BaseObject {
         SpeedStart();   //速度・方向
         StartPhysics(); //重力やレイキャスト
         SpwanStart();   //復帰する処理用
+        TurnnStart();   //ターン
     }
 
     //更新=====================================================================
@@ -115,12 +124,14 @@ public partial class PlayerOperateV2 : BaseObject {
     void FixedUpdate() {
 
         InputDataReset();   //入力情報リセット
-        SetInput();         //入力受け取り
+        InputFixdUpdate();  //入力受け取り
         
         PhysicsReycast();       //レイキャスト
         PhysicsGroundCheck();   //地面チャック
         PhysicsWallCheck();     //壁チェック
         PhysicsGravity();       //重力
+
+        TurnFunc();
         
         SpeedFunc();    //速度管理
         ActionBoost();  //ブースト処理
@@ -203,12 +214,16 @@ public partial class PlayerOperateV2 : BaseObject {
          m_TrgState[TRGGER_Boost] = false;
          m_TrgState[TRGGER_Jump ] = false;
          m_TrgState[TRGGER_Heat ] = false;
+         m_TrgState[TRGGER_Turn ] = false;
     }
 
     public void OnChildTriggerEnter(Collider col) {
-        Debug.Log("Hit trigger : tag = " + col.tag);
-        if(col.tag == "BoostTrigger") m_TrgState[TRGGER_Boost] = true;
-        if(col.tag == "JumpTrigger" ) m_TrgState[TRGGER_Jump ] = true;
-        if(col.tag == "HeatTrigger" ) m_TrgState[TRGGER_Heat ] = true;
+#if UNITY_EDITOR
+        if(col.tag != TagNames.Untagged) Debug.Log("Hit trigger : tag = " + col.tag);
+#endif
+        if(col.tag == TagNames.BoostTrigger) m_TrgState[TRGGER_Boost] = true;
+        if(col.tag == TagNames.JumpTrigger ) m_TrgState[TRGGER_Jump ] = true;
+        if(col.tag == TagNames.HeatTrigger ) m_TrgState[TRGGER_Heat ] = true;
+        if(col.tag == TagNames.TurnTrigger ) m_TrgState[TRGGER_Turn ] = true;
     }
 }

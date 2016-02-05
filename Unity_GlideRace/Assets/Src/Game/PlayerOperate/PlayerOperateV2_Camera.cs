@@ -46,12 +46,18 @@ public partial class PlayerOperateV2 : BaseObject {
 
     //初期化///////////////////////////////////////////////////////////////////
     private void CameraStart() {
+        //カメラ
         m_Camera = GetComponentInChildren<CameraControl>();
         m_Camera.gameObject.name = this.gameObject.name + "Camera";
         m_Camera.DoWantFixdUpdate(true);
         m_Camera.DoWantLocalPos(false);
         m_Camera.DoWantLocalRot(false);
         m_Camera.smoothing = true;
+        //ロック
+        m_fComPosLock = false;
+        m_fComRotLock = false;
+        //特殊処理関数
+        m_fnCamSpecialFunc = null;
     }
 
     //更新/////////////////////////////////////////////////////////////////////

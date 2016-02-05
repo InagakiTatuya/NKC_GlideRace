@@ -17,16 +17,27 @@ public partial class PlayerOperateV2 : BaseObject {
 #if UNITY_EDITOR
     //GUI
     void OnGUI() {
+        //STATE
         GUILayout.Label(m_NowState.OutputDebugText(4));
 
+        //RACK
         GUILayout.BeginVertical(GUI.skin.box);
         GUILayout.Label("State = " + System.Enum.GetName(typeof(RackState), m_Rack));
-        if(GUILayout.Button("To " + System.Enum.GetName(typeof(RackState), 0))) { m_Rack = (RackState)0; }
-        if(GUILayout.Button("To " + System.Enum.GetName(typeof(RackState), 1))) { m_Rack = (RackState)1; }
-        if(GUILayout.Button("To " + System.Enum.GetName(typeof(RackState), 2))) { m_Rack = (RackState)2; }
-        if(GUILayout.Button("To " + System.Enum.GetName(typeof(RackState), 3))) { m_Rack = (RackState)3; }
+        //if(GUILayout.Button("To " + System.Enum.GetName(typeof(RackState), 0))) { m_Rack = (RackState)0; }
+        //if(GUILayout.Button("To " + System.Enum.GetName(typeof(RackState), 1))) { m_Rack = (RackState)1; }
+        //if(GUILayout.Button("To " + System.Enum.GetName(typeof(RackState), 2))) { m_Rack = (RackState)2; }
+        //if(GUILayout.Button("To " + System.Enum.GetName(typeof(RackState), 3))) { m_Rack = (RackState)3; }
         GUILayout.EndVertical();
 
+        //Anc
+        GUILayout.BeginVertical(GUI.skin.box);
+        if(m_AncData != null) {
+            GUILayout.Label("AncIndNo = " + m_AncData.indexNo);
+            GUILayout.Label("AncGroNo = " + m_AncData.groupNo);
+        }
+        GUILayout.EndVertical();
+
+        //SPEED
         GUILayout.Label(m_Speed.DebugDrawString());
 
     }

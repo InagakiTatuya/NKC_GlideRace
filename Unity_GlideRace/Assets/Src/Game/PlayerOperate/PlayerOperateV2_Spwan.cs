@@ -14,12 +14,12 @@ public partial class PlayerOperateV2 : BaseObject {
     private const float     BOTTOM_Y         = -4f; //復帰フラグを立てるＹ座標
     private const int       SPWANSTATESIZE   = 5;   //復帰ステートの最大数
     private StateManager    m_SpwanStep;    //ステートマシン管理
-    private int             m_RespwonStep;  //復帰ステップ
+    private int             m_RespwonStepNo;  //復帰ステップ
 
     //初期化===================================================================
     private void SpwanStart() {
         //復帰ステップ
-        m_RespwonStep = 0;
+        m_RespwonStepNo = 0;
 
         //復帰処理（初期化関数）
         UnityAction[] fnInit = new UnityAction[SPWANSTATESIZE] {
@@ -45,13 +45,13 @@ public partial class PlayerOperateV2 : BaseObject {
     private void SpwanFunc() {
         
         //ステート変更
-        m_TrgState[STATE_Respwan] = (traPos.y <= -4f && m_RespwonStep == 0);
-        m_NowState[STATE_Respwan] = (m_RespwonStep != 0);
+        m_TrgState[STATE_Respwan] = (traPos.y <= -4f && m_RespwonStepNo == 0);
+        m_NowState[STATE_Respwan] = (m_RespwonStepNo != 0);
         
         //コースに復帰するフラグを立てる
         if(m_TrgState[STATE_Respwan]) {
-            m_RespwonStep = 1;
-            m_SpwanStep.SetNextState(m_RespwonStep);
+            m_RespwonStepNo = 1;
+            m_SpwanStep.SetNextState(m_RespwonStepNo);
         }
 
         //コースに復帰する処理
@@ -59,8 +59,8 @@ public partial class PlayerOperateV2 : BaseObject {
             //ステートで分岐して処理する
             m_SpwanStep.Update();
             //ステート変更
-            if(m_SpwanStep.getState != m_RespwonStep) {
-                m_SpwanStep.SetNextState(m_RespwonStep);
+            if(m_SpwanStep.getState != m_RespwonStepNo) {
+                m_SpwanStep.SetNextState(m_RespwonStepNo);
             }
         }
 
@@ -89,7 +89,7 @@ public partial class PlayerOperateV2 : BaseObject {
         ModelScale = ModelScale * 0.95f;
         if(ModelScale.x < 0.05f) {
             ModelScale = Vector3.one * 0.02f;
-            m_RespwonStep++;//次のステップへ
+            m_RespwonStepNo++;//次のステップへ
         }
     }
     //ステップ０２=============================================================
@@ -99,7 +99,7 @@ public partial class PlayerOperateV2 : BaseObject {
     private void SpawnStep02Init() {
     }
     private void SpawnStep02Update() { 
-            m_RespwonStep++;//次のステップへ
+            m_RespwonStepNo++;//次のステップへ
     }
     //ステップ０３=============================================================
     //  記憶したアンカーデータから復帰用座標にキャラを移動
@@ -113,7 +113,8 @@ public partial class PlayerOperateV2 : BaseObject {
         //記憶したアンカーデータから復帰用座標にキャラを移動
         SpawnPoint data  = m_CouresAncs.GetSpw(m_AncDataGround.groupNo);
         traPos      = data.point + new Vector3(0, 6f, 0);
-        SetPlayerDir(data.dirdirection);  //キャラ方向修正
+        SetPlayerDir(data.dirdirection);  //キャラ進行方向修正
+        SetPlayerModelDir(data.dirdirection);  //キャラ進行方向修正
         m_Speed.Reset();                  //速度リセット
 
         //カメラ
@@ -126,7 +127,7 @@ public partial class PlayerOperateV2 : BaseObject {
         ModelScale = ModelScale * 1.2f;
         if(ModelScale.x > 1.00f) {
             ModelScale = Vector3.one;
-            m_RespwonStep++;//次のステップへ
+            m_RespwonStepNo++;//次のステップへ
         }
     }
     //ステップ４===============================================================
@@ -134,11 +135,11 @@ public partial class PlayerOperateV2 : BaseObject {
     //  操作のロックを解除
     //=========================================================================
     private void SpawnStep04Init() {
-        //入力をロック
+        //入力をアンロック
         InputLock = false;
     }
     private void SpawnStep04Update() {
-        m_RespwonStep = 0;//ステップを初期化
+        m_RespwonStepNo = 0;//ステップを初期化
     }
 
     //カメラ特殊処理///////////////////////////////////////////////////////////

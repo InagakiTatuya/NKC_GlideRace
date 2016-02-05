@@ -86,8 +86,9 @@ public partial class PlayerOperateV2 : BaseObject {
 
         //ステート変更
         //以下の条件では、重力処理を行わない
-        //  !( ジャンプ || ブースト中 || 滑空中 )
-        bool useGra = !m_NowState.Or(STATE_OnGround, STATE_Jump, STATE_Boost, STATE_Glide);
+        //  !( ジャンプ || ブースト中 || 滑空中 || ターン中 )
+        bool useGra = !m_NowState.Or( STATE_OnGround, STATE_Jump,
+                                      STATE_Boost, STATE_Glide, STATE_Turn);
         m_TrgState[STATE_UseGravity] = (!m_NowState[STATE_UseGravity] && useGra);
         m_NowState[STATE_UseGravity] = useGra;
         

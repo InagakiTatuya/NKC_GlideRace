@@ -65,9 +65,10 @@ public class SpeedStatus {
     private float m_level = 1f;
     private float m_value = 0f;    //実際の数値
 
-    public float seed  { get{ return m_seed;  } }
-    public float level { get{ return m_level; } }
-    public float value { get{ return m_value; } }
+    public float seed     { get{ return m_seed;  } }
+    public float level    { get{ return m_level; } }
+    public float value    { get{ return m_value; } }
+    public float sqrValue { get{ return m_value * m_value; } }
 
     public SpeedStatus(float aACC, float aTURN, float aMAXSEED) {
         ACC      = aACC;

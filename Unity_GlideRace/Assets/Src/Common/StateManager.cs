@@ -16,7 +16,7 @@ class StateManager {
     private int m_NextStateNo;      //次のフレームでのステート番号
 
     private int   m_STATE_NO_MAX;   //ステートの最大数
-    private float m_StateTime;      //ステート内で使用する
+    private float m_StateTime;      //ステート変更してからの時間（秒）
 
     private bool         m_useFixedUpdate = false;   //FixdUpdateで動くようにするか
     private UnityAction  m_fnAddDeltaTime;

@@ -31,7 +31,7 @@ public partial class PlayerOperateV2 : BaseObject {
 
         //滑空開始
         if(m_TrgState[STATE_Glide]) {
-            Debug.Log("グライド開始！");
+            Debug.Log("グライド開始！ plyNum " + m_plyNo);
             //[グライダーエフェクト発生処理をここに書く]
         }
 
@@ -42,4 +42,23 @@ public partial class PlayerOperateV2 : BaseObject {
         }
 
     }
+
+        
+    //ジャンプ処理=============================================================
+    //  ジャンプ処理を行う
+    //=========================================================================
+    private const int JUMPMAXCOUNT = 40;
+    private int m_jumpCnt = 0;
+
+    private void ActionJump() {
+        //ステート変更
+        bool jump = (m_TrgState[TRGGER_Jump] ||
+            (m_jumpCnt > 0 && m_jumpCnt < JUMPMAXCOUNT) );
+        
+        m_TrgState[STATE_Jump] = (!m_NowState[STATE_Jump] && jump);
+        m_NowState[STATE_Jump] = jump;
+
+
+    }
+
 }

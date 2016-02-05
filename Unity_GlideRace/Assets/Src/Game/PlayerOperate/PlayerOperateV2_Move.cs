@@ -15,7 +15,7 @@ public partial class PlayerOperateV2 : BaseObject {
     private Vector3       m_handleDir;    //ＸＺ空間上の移動方向（Ｙは常に０）
     private Vector3       m_angleDir;     //ＸＹ空間上の高さ方向（Ｘは常に０）
     private Vector3       m_forward;      //移動方向
-    private Vector3       m_modelFrwrd;    //モデルの正面方向
+    private Vector3       m_modelFrwrd;   //モデルの正面方向
 
     //転回・ドリフト^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     private const float   ROTSTEPNEXT  = 60.0f; //急カーブする数値
@@ -40,9 +40,15 @@ public partial class PlayerOperateV2 : BaseObject {
     
     //方向設定=================================================================
     public void SetPlayerDir(Vector3 aDir) {
-        m_handleDir = m_forward = m_modelFrwrd = aDir;
+        m_handleDir = m_forward = aDir;
     }
-
+    public void SetPlayerModelDir(Vector3 aDir) {
+        m_modelFrwrd = aDir;
+    }
+    //強制ブースト=============================================================
+    public void ForcedBoost() {
+        m_TrgState[TRGGER_Boost] = true;
+    }
 
     //初期化///////////////////////////////////////////////////////////////////
     //  Startで呼ばれる関数
@@ -94,11 +100,9 @@ public partial class PlayerOperateV2 : BaseObject {
     //  ブーストステートに変更と、ブースト処理を行う
     //=========================================================================
     private void ActionBoost() {
-        
         //ステート変更
         bool boost = (m_TrgState[TRGGER_Boost] ||
             (m_boostCnt > 0 && m_boostCnt < BOOSTMAXCOUNT) );
-        
         m_TrgState[STATE_Boost] = (!m_NowState[STATE_Boost] && boost);
         m_NowState[STATE_Boost] = boost;
 
