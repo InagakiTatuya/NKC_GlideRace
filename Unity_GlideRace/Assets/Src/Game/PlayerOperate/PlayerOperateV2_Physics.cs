@@ -105,7 +105,7 @@ public partial class PlayerOperateV2 : BaseObject {
          //重力処理
         if(m_NowState[STATE_UseGravity]) {
             m_Gravity.AddSeed();
-            SetTraPosY = traPos.y - m_Gravity.fallValue;
+            SetTraPosY = traPos.y - m_Gravity.fallValue * (Time.fixedDeltaTime * 50f);
         }
     }
     
@@ -127,6 +127,6 @@ public partial class PlayerOperateV2 : BaseObject {
         m_TrgState[STATE_HitWoll] = (!m_NowState[STATE_HitWoll] && wall);
         m_NowState[STATE_HitWoll] = wall;
 
-        if(m_NowState[STATE_HitWoll]) Debug.Log("壁！");
+        if(m_NowState[STATE_HitWoll]) Debug.Log("壁！ PlyNo="+m_plyNo);
     }
 }

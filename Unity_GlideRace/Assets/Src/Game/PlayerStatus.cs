@@ -10,8 +10,25 @@
 using UnityEngine;
 using System.Collections;
 
+
 ///////////////////////////////////////////////////////////////////////////////
-// ステート 
+// 個別ステート
+//   キャラの個性を設定するステート
+///////////////////////////////////////////////////////////////////////////////
+[System.Serializable]
+public struct PlayerCharState {
+    public float wait;      //重さ
+    public float accel;     //加速
+    
+    public PlayerCharState(float aWait, float aAccel) {
+        wait  = aWait;
+        accel = aAccel;
+    }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+// ラック
 ///////////////////////////////////////////////////////////////////////////////
 public enum RackState : int {
     READY = 0,
@@ -58,9 +75,10 @@ public class SpeedStatus {
     public const float MAXLEVEL  = 4;
     public const float MATHINDEX = 2f; //指数
 
-    public float ACC      = 0.1f; //Acceleration
-    public float TURN     = 0.1f;  
-    public float MAXSEED  = 1f;
+    public float ACC        = 0.1f; //Acceleration
+    public float TURN       = 0.1f;  
+    public float MAXSEED    = 1f;
+    public float MINADDSEED = 3f;   //加算時にこの値以下ならこの値になる
     private float m_seed  = 0f;    //基準となる数値
     private float m_level = 1f;
     private float m_value = 0f;    //実際の数値

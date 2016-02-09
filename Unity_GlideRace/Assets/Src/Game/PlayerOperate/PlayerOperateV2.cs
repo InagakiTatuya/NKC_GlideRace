@@ -119,8 +119,7 @@ public partial class PlayerOperateV2 : BaseObject {
     }
 
     //更新=====================================================================
-    void Update() { 
-    }
+    //void Update() { }
     void FixedUpdate() {
 
         InputDataReset();   //入力情報リセット
@@ -145,6 +144,8 @@ public partial class PlayerOperateV2 : BaseObject {
         
         SearchAnchor(); //アンカー検知
         SpwanFunc();    //復帰処理
+
+        Anima();        //アニメーション処理
         
         CameraFixdUpdate();     //カメラ更新
         SendToHeadUpDisplay();  //キャンバスにデータを適用

@@ -83,6 +83,8 @@ public partial class PlayerOperateV2 : BaseObject {
         bool up = (m_Input.accel);
         if(up) {
             addSeed = m_Speed.ACC;
+            //SeedがMINADDSEED以下の場合MINADDSEEDを余分に加算する
+            if(m_Speed.seed <= m_Speed.MINADDSEED) addSeed += m_Speed.MINADDSEED;
         }
 
         //減速
@@ -217,15 +219,13 @@ public partial class PlayerOperateV2 : BaseObject {
         m_forward = MyUtility.Vec3DRotation(m_angleDir,
             Mathf.Atan2(m_handleDir.z, m_handleDir.x) - Mathf.PI/2f, Vector3.up);
 
-        //Debug.DrawRay(traPos, m_forward, Color.cyan, Mathf.Max(0.1f, m_Speed.value));
-        
         //モデル方向
         m_modelFrwrd = m_handleDir;
     }
 
     //速度値の適用=============================================================
     private void AppSpeed() {
-        traPos += m_forward * m_Speed.value;
+        traPos += m_forward * m_Speed.value * (Time.fixedDeltaTime * 50f);
         traForward = m_modelFrwrd;
     }
 }
