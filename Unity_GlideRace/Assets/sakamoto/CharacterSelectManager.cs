@@ -14,13 +14,9 @@ public class CharacterSelectManager : MonoBehaviour {
 		charselect	=	new CharSelect[length];
 		charImage	=	new Image[length];
 		for(int i = 0; i < length; i++){
-			child[i]		=	gameObject.transform.GetChild(i).gameObject;
-			charselect[i]	=	child[i].GetComponent<CharSelect>();
+			child[i]				=	gameObject.transform.GetChild(i).gameObject;
+			charselect[i]			=	child[i].GetComponent<CharSelect>();
 			charselect[i].SelectNum	=	i;
 		}
-	}
-	
-	void Update () {
-	
 	}
 }
