@@ -3,8 +3,8 @@ using System.Collections;
 
 public class selectIcon : MonoBehaviour {
 	
-	public	int[]			selectNo	=	new int[4];
-	public	int[]			selectChara	=	new int[4];
+	public static int[]		s_selectNo  	=	new int[4];
+	public static int[]		s_selectChara	=	new int[4];
 	private	int				length		=	4;
 	private	GameObject[]	obj;
 	private	IconCount		icon;
@@ -20,8 +20,8 @@ public class selectIcon : MonoBehaviour {
 	
 	void Update () {
 		for(int i = 0;i<length;i++){
-			selectNo[i]		=	icon.selectNo[i];
-			selectChara[i]	=	icon.selectChara[i];
+			s_selectNo[i]		=	icon.selectNo[i];
+			s_selectChara[i]	=	icon.selectChara[i];
 		}
 	}
 }

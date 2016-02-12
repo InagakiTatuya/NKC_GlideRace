@@ -71,7 +71,7 @@ public class PlayerWindow : MonoBehaviour {
 					cursorHoldObj[i].transform.parent	=	windowManagerObj.transform;
 					cursorManger[i]		=	cursorHoldObj[i].GetComponent<CursorManager>();
 					cursorManger[i].obj	=	psw[i].gameObject;
-					if(si.selectNo[i] == 2){
+					if(selectIcon.s_selectNo[i] == 2){
 						npcButton[i-1].state	=	NPCButton.STATUS.NOTURN;
 					}
 				}
