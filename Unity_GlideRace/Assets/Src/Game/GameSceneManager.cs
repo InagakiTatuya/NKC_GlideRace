@@ -59,23 +59,16 @@ public class GameSceneManager : BaseObject {
         m_PlyMgr = GameObject.FindObjectOfType<PlayerManager>();
         
         //キャラセレクトからデータを受け取る
-
-        //=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#
-        //  工事中につき仮の処理
-        //=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#
+        /*
         int[] plymode = selectIcon.s_selectNo; // 0 = 参加しない　1 = 人間  2 = NPC
         int[] plychar = selectIcon.s_selectChara;
+        //*/
+        int[] plymode = {1, 1, 2, 0}; // 0 = 参加しない　1 = 人間  2 = NPC
+        int[] plychar = {0, 1, 2, 3};
 
-        //PlyaerManagerに渡すためのデータを取り出す
-        PlayerCharStateData[] data = 
-            new PlayerCharStateData[Database.CHAR_DATA_MAX];
-        for(int i=0; i < Database.CHAR_DATA_MAX; i++) {
-            data[i] = Database.obj.GetPlayerCharaState(plychar[i]);
-        }
-
-        m_PlyMgr.SetPlyerCharData(data);
+        //データを渡す
+        m_PlyMgr.SetingPlyaerData(plymode, plychar);
         
-    
     }
 	
     //更新=====================================================================

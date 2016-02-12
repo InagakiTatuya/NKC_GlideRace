@@ -35,7 +35,7 @@ public class CameraControl : MonoBehaviour {
     private float   m_SmoothRotSpeed = 0.1f;
 
     //プロパティ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    public Camera camera { get { return m_Cam; } }
+    public Camera getCamera { get { return m_Cam; } }
     
     public Vector3 pos { get { return m_Pos; } set { m_Pos = value; } }
     public Vector3 at  { get { return m_At;  } set { m_At  = value; } }

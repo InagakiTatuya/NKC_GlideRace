@@ -26,6 +26,13 @@ public partial class PlayerOperateV2 : BaseObject {
     public bool ComRotLock { get { return m_fComRotLock; }
                              set { m_fComRotLock = value; } }
 
+    //公開関数/////////////////////////////////////////////////////////////////
+    public void SetCamRect(Rect aRect) {
+        if(m_Camera == null) FindCamera();
+        m_Camera.getCamera.rect = aRect;
+    }
+
+    //非公開関数///////////////////////////////////////////////////////////////
     //特殊処理関数設定=========================================================
     public void SetCamSpecialFunc(CameraSpecialFunc afnFunc) {
         m_fnCamSpecialFunc = afnFunc;
@@ -47,17 +54,22 @@ public partial class PlayerOperateV2 : BaseObject {
     //初期化///////////////////////////////////////////////////////////////////
     private void CameraStart() {
         //カメラ
+        if(m_Camera == null) FindCamera();
+        //ロック
+        m_fComPosLock = false;
+        m_fComRotLock = false;
+        //特殊処理関数
+        m_fnCamSpecialFunc = null;
+    }
+    
+    //カメラ取得===============================================================
+    private void FindCamera() {
         m_Camera = GetComponentInChildren<CameraControl>();
         m_Camera.gameObject.name = this.gameObject.name + "Camera";
         m_Camera.DoWantFixdUpdate(true);
         m_Camera.DoWantLocalPos(false);
         m_Camera.DoWantLocalRot(false);
         m_Camera.smoothing = true;
-        //ロック
-        m_fComPosLock = false;
-        m_fComRotLock = false;
-        //特殊処理関数
-        m_fnCamSpecialFunc = null;
     }
 
     //更新/////////////////////////////////////////////////////////////////////

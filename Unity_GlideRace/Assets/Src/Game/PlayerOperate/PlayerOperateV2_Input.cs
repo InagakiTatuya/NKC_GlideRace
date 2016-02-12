@@ -53,8 +53,8 @@ public partial class PlayerOperateV2 : BaseObject {
         InputPad.InputAllData(ref m_Input);
         InputPad.InputAllDownData(ref m_InputDown);
     #else
-        InputPad.InputData(ref m_Input, m_plyNum);
-        InputPad.InputDownData(ref m_InputDown, m_plyNum);
+        InputPad.InputData(ref m_Input, m_plyNo);
+        InputPad.InputDownData(ref m_InputDown, m_plyNo);
     #endif
     }
 

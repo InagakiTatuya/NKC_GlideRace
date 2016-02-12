@@ -11,9 +11,11 @@ using System.Collections;
 
 public partial class PlayerOperateV2 : BaseObject {
 
+
 //=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=
 //ココより下は、デバック用 
 //=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=
+    /*
 #if UNITY_EDITOR
     //GUI
     void OnGUI() {
@@ -70,6 +72,7 @@ public partial class PlayerOperateV2 : BaseObject {
 
     }
 #endif
+//*/
 
 }
 

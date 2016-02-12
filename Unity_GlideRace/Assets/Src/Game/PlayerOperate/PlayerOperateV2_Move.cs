@@ -220,9 +220,7 @@ public partial class PlayerOperateV2 : BaseObject {
             Mathf.Atan2(m_handleDir.z, m_handleDir.x) - Mathf.PI/2f, Vector3.up);
 
         //モデル方向
-        if(m_NowState[STATE_OnGround]) {
-            m_modelFrwrd = m_handleDir;
-        }
+        m_modelFrwrd = m_handleDir;
     }
 
     //速度値の適用=============================================================

@@ -10,7 +10,7 @@ using System.Collections;
 public partial class PlayerOperateV2 : BaseObject {
     //Inspecterで編集^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     [SerializeField] public int m_plyNo = 1;    //プレイヤー番号
-    [SerializeField] public int m_CpuLv = 0;    //CPU
+    [SerializeField] public int m_NpcLv = 0;    //CPU
 
     //非公開変数^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     //子オブジェクトの参照
@@ -76,14 +76,21 @@ public partial class PlayerOperateV2 : BaseObject {
     
     //公開プロパティ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     public int GetPlayerNo{ get{ return m_plyNo;  } }
-    public int SetPlayerNo{ set{ m_plyNo = value; } }
+    public int SetPlayerNo{ 
+        set{ 
+            m_plyNo = value; 
+            Rename();
+        }
+    }
 
-    public int GetCpuLv { get{ return m_CpuLv;  } }
-    public int SetCpuLv { set{ m_CpuLv = value; } }
+    public int GetNpcLv { get{ return m_NpcLv;  } }
+    public int SetNpcLv { set{ m_NpcLv = value; } }
+
+    public bool isNpc { get{ return (m_NpcLv > 0); } } //ＮＰＣか否か
 
     //公開関数/////////////////////////////////////////////////////////////////
     public void SetCharData(PlayerCharStateData aPlayerState){
-        Debug.Log("PlayerCharState を受け取りました"+ GetPlayerNo);
+        this.ModeChange(Database.obj.GetPlayerModel(aPlayerState.modelId));
     }
 
     //非公開関数///////////////////////////////////////////////////////////////
@@ -94,14 +101,12 @@ public partial class PlayerOperateV2 : BaseObject {
 
     //初期化===================================================================
     void Awake() {
-        //リネーム
-        gameObject.name = "Player" + m_plyNo.ToString("00");
+
     }
 
     void Start() {
-        
         //子オブジェクトの参照
-        m_Model = transform.FindChild("Model").transform;
+        //m_Model = transform.FindChild("Model").transform;
         m_HUD   = transform.FindChild("Canvas").GetComponent<HeadUpDisplay>();
         
         //アンカー
@@ -235,12 +240,27 @@ public partial class PlayerOperateV2 : BaseObject {
     }
 
     public void OnChildTriggerEnter(Collider col) {
-#if UNITY_EDITOR
+        #if UNITY_EDITOR
         if(col.tag != TagNames.Untagged) Debug.Log("Hit trigger : tag = " + col.tag);
-#endif
+        #endif
         if(col.tag == TagNames.BoostTrigger) m_TrgState[TRGGER_Boost] = true;
         if(col.tag == TagNames.JumpTrigger ) m_TrgState[TRGGER_Jump ] = true;
         if(col.tag == TagNames.HeatTrigger ) m_TrgState[TRGGER_Heat ] = true;
         if(col.tag == TagNames.TurnTrigger ) m_TrgState[TRGGER_Turn ] = true;
+    }
+
+
+    //リネーム=================================================================
+    private void Rename() {
+        //リネーム
+        gameObject.name = "Player" + m_plyNo.ToString("00");
+    }
+
+    //モデル変更
+    private void ModeChange(GameObject aNowModel) {
+        GameObject model = Instantiate(aNowModel);
+        model.transform.SetParent(transform,false);
+        
+        m_Model = model.transform;
     }
 }
