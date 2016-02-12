@@ -4,7 +4,7 @@ using System.Collections;
 public class NPCWindowManager : MonoBehaviour {
 
 	private	string		prefab	=	"Prefab/NPCIcon";
-	private string		texture =	"CharacterSelect/Rank";
+	private string		texture =	"Texture/SelectChar";
 	public	GameObject	ManagerObj;
 	public	GameObject	obj;
 	public	Sprite[]	sprite;
