@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: c6e557ed8dab6fa4d9b7ee1b2b6627ea
-timeCreated: 1454487009
+timeCreated: 1455268395
 licenseType: Free
 ModelImporter:
   serializedVersion: 18
@@ -53,7 +53,7 @@ ModelImporter:
     splitTangentsAcrossUV: 1
     normalImportMode: 0
     tangentImportMode: 1
-  importAnimation: 1
+  importAnimation: 0
   copyAvatar: 0
   humanDescription:
     human: []
