@@ -11,7 +11,7 @@ public class selectIcon : MonoBehaviour {
 
 	void Start () {
 		int	objLength	=	transform.childCount;
-		obj			=	new GameObject[length];
+		obj				=	new GameObject[length];
 		for(int i=0;i<objLength;i++){
 			if(icon != null)	break;
 			icon	=	transform.GetChild(i).GetComponent<IconCount>();

@@ -5,11 +5,13 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
 
-public class raytrace : MonoBehaviour {
+public class RayTrace : MonoBehaviour {
 
 	//何秒で全てを光らせるか
 	[SerializeField]
 	private float transTime = 1.0f;
+
+	private	const float	waitTime	= 0.5f;
 
 	private Material m;
 	private float timer;
@@ -29,16 +31,15 @@ public class raytrace : MonoBehaviour {
 			return;
 		}
 		
-		float t;
-		t=timer/transTime;
-		if(t>1.0f) timer=transTime;
+		float t	= Mathf.Min(timer/transTime,1.0f);
 		m.SetFloat("_TransTime",t);
 		timer+=Time.deltaTime;
 
 		//光終わったら停止
-		if(t>=1.0f){
-			this.enabled = false;
-			return;
+		if(timer >= transTime + waitTime){
+			timer	=	0.0f;
+			//this.enabled = false;
+			//return;
 		}
 	}
 }

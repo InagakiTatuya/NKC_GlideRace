@@ -1,8 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.Events;
+using ScenesNames;
 
 public class CharacterDecision : MonoBehaviour {
+	
+    UnityAction<int> act;
 
 	public	GameObject[]	childObj;
 	public	int				length;
@@ -48,7 +52,7 @@ public class CharacterDecision : MonoBehaviour {
 			decTrans.localScale	=	Vector2.one;
 			for(int i = 0;i<PlayerNum;i++){
 				if(input[i].menu){
-					Debug.Log("Dec");
+					act = transform.root.GetComponent<SceneLoadManager>().ChangeScene;
 				}
 				InputPad.InputData(ref input[i], i+1);
 			}
