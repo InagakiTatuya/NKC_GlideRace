@@ -13,7 +13,7 @@ public partial class PlayerOperateV2 : BaseObject {
     //特殊処理関数
     public delegate void CameraSpecialFunc(CameraControl cam);
 
-    private Vector3             CAM_OFFSET = new Vector3(0, 4, -9);
+    private Vector3             CAM_OFFSET = new Vector3(0, 5, -9);
     private CameraControl       m_Camera;
     private bool                m_fComPosLock;
     private bool                m_fComRotLock;

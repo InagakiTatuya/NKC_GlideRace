@@ -16,13 +16,15 @@ using System.Collections;
 //   キャラの個性を設定するステート
 ///////////////////////////////////////////////////////////////////////////////
 [System.Serializable]
-public struct PlayerCharState {
+public struct PlayerCharStateData {
+    public int   modelId;   //モデルID
     public float wait;      //重さ
     public float accel;     //加速
     
-    public PlayerCharState(float aWait, float aAccel) {
-        wait  = aWait;
-        accel = aAccel;
+    public PlayerCharStateData(int aModelId , float aWait, float aAccel) {
+        modelId = aModelId;
+        wait    = aWait;
+        accel   = aAccel;
     }
 }
 

@@ -36,6 +36,13 @@ public class NumberSprite : MonoBehaviour {
 
     //公開関数=================================================================
     public void SetNumber(int aNum) {
+        #if UNITY_EDITOR
+        if(aNum < 0 || aNum >= s_NumArr.Length) {
+            Debug.LogError("異常な値を受け取りました。 ="+aNum);
+            Debug.Break();
+            return;
+        }
+        #endif
         m_Image.sprite = s_NumArr[aNum];
     }
 

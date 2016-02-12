@@ -9,7 +9,8 @@ using System.Collections;
 
 public partial class PlayerOperateV2 : BaseObject {
     //Inspecterで編集^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    [SerializeField] public int m_plyNo = 1;   //プレイヤー番号
+    [SerializeField] public int m_plyNo = 1;    //プレイヤー番号
+    [SerializeField] public int m_CpuLv = 0;    //CPU
 
     //非公開変数^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     //子オブジェクトの参照
@@ -72,7 +73,20 @@ public partial class PlayerOperateV2 : BaseObject {
         set { m_Model.localScale = value; }
         get { return m_Model.localScale; }
     }
+    
+    //公開プロパティ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    public int GetPlayerNo{ get{ return m_plyNo;  } }
+    public int SetPlayerNo{ set{ m_plyNo = value; } }
 
+    public int GetCpuLv { get{ return m_CpuLv;  } }
+    public int SetCpuLv { set{ m_CpuLv = value; } }
+
+    //公開関数/////////////////////////////////////////////////////////////////
+    public void SetCharData(PlayerCharStateData aPlayerState){
+        Debug.Log("PlayerCharState を受け取りました"+ GetPlayerNo);
+    }
+
+    //非公開関数///////////////////////////////////////////////////////////////
     //ラック変更===============================================================
     private void SetRack(RackState aRackState) {
         m_Rack = aRackState;
@@ -139,13 +153,15 @@ public partial class PlayerOperateV2 : BaseObject {
         ActionGlider(); //滑空処理
 
         SlopeFunc();  //坂判定
+
+        Anima();        //アニメーション処理
+
         AppForward(); //移動方向適応
         AppSpeed();   //移動処理
         
         SearchAnchor(); //アンカー検知
         SpwanFunc();    //復帰処理
 
-        Anima();        //アニメーション処理
         
         CameraFixdUpdate();     //カメラ更新
         SendToHeadUpDisplay();  //キャンバスにデータを適用
