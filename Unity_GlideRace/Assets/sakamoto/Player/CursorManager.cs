@@ -29,6 +29,7 @@ public partial class CursorManager : MonoBehaviour {
 	}
 
 	void Start(){
+		trans.localPosition	=	transform.parent.transform.position;
 		window			=	obj.GetComponent<PlayerSelectWindow>();
 		trans.localPosition	=	DEFALTPOS[PlayerNum-1];
 		input = new InputData();

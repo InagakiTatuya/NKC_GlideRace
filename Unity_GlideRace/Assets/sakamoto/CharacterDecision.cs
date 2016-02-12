@@ -6,7 +6,7 @@ using ScenesNames;
 
 public class CharacterDecision : MonoBehaviour {
 	
-    UnityAction<int> act;
+    UnityAction act;
 
 	public	GameObject[]	childObj;
 	public	int				length;
@@ -18,10 +18,13 @@ public class CharacterDecision : MonoBehaviour {
 
 	private	int				PlayerNum;
 	private	InputData[]		input;
-	private	IconCount	iconCount;
+	private	IconCount		iconCount;
 
 	void Start () {
-		SoundManager.obj.PlayBGM(1,true);
+		if (Application.loadedLevel == SceneName.Title.ToInt()){
+			act	=	transform.root.GetComponent<SceneLoadManager>().NextScene;
+		}
+		SoundManager.obj.PlayBGM(2,true);
 		decIcons	=	0;
 		length		=	transform.childCount;
 		childObj	=	new GameObject[length];
@@ -44,6 +47,7 @@ public class CharacterDecision : MonoBehaviour {
 	}
 	
 	void Update () {
+				Debug.Log(input[0].menu);
 		playMax		=	iconCount.length;
 		decIcons	=	iconCount.setNum;
 		if(decIcons	!=	playMax){
@@ -52,11 +56,11 @@ public class CharacterDecision : MonoBehaviour {
 		else if(decIcons == playMax){
 			decTrans.localScale	=	Vector2.one;
 			for(int i = 0;i<PlayerNum;i++){
+				InputPad.InputDownData(ref input[i], i+1);
 				if(input[i].menu){
-					Debug.Log(act);
-					act = transform.root.GetComponent<SceneLoadManager>().ChangeScene;
+					SoundManager.obj.PlaySE(1);
+					act();
 				}
-				InputPad.InputData(ref input[i], i+1);
 			}
 		}
 	}

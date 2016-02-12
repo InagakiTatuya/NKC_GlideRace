@@ -4,9 +4,9 @@
 namespace ScenesNames{
 	public enum SceneName{
 		Title,
-		ModeSelect,
+		//ModeSelect,
 		CharSelect,
-		StageSelect,
+		//StageSelect,
 		Game,
 		Resalt,
 		Pause,

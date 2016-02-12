@@ -9,7 +9,7 @@ public class PlayerWindow : MonoBehaviour {
 	public	Sprite[]				sprite;
 	public	Sprite[]				rankSprite;
 	private	string					texture		= "CharacterSelect/Window";
-	private string					rankTexture = "CharacterSelect/Rank";
+	private string					rankTexture = "Texture/SelectChar";
 	private	int						PlayerNum;
 	private	GameObject[]			windowObj;
 	private	PlayerSelectWindow[]	psw;
@@ -42,11 +42,7 @@ public class PlayerWindow : MonoBehaviour {
 
 	void Start(){
 		PlayerNum	=	4;
-		cursorHoldObj	=	new GameObject[PlayerNum];
-		cursorManger	=	new CursorManager[PlayerNum];
-		input			=	new InputData[PlayerNum];
-		windowObj		=	new GameObject[PlayerNum];
-		psw				=	new PlayerSelectWindow[PlayerNum];
+		SetAllArray();
 		NPCNum();
 		for(int i = 0;i<PlayerNum;i++){
 			input[i]		=	new InputData();
@@ -77,6 +73,14 @@ public class PlayerWindow : MonoBehaviour {
 				}
 			}
 		}
+	}
+
+	void SetAllArray(){
+		cursorHoldObj	=	new GameObject[PlayerNum];
+		cursorManger	=	new CursorManager[PlayerNum];
+		input			=	new InputData[PlayerNum];
+		windowObj		=	new GameObject[PlayerNum];
+		psw				=	new PlayerSelectWindow[PlayerNum];
 	}
 
 	void SetPlayer1(){

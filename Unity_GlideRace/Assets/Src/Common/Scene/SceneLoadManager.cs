@@ -7,12 +7,12 @@ public class SceneLoadManager : MonoBehaviour
 {
     #region //フィールド
     private static readonly List<int>[] LoadScene = new List<int>[]{
-        new List<int> {SceneName.ModeSelect.ToInt()},//Title
-        new List<int> {SceneName.CharSelect.ToInt() ,SceneName.Title.ToInt()},//Mode
-        new List<int> {SceneName.StageSelect.ToInt(),SceneName.ModeSelect.ToInt()},//Char
+        new List<int> {SceneName.CharSelect.ToInt()},//Title
+        //new List<int> {SceneName.CharSelect.ToInt() ,SceneName.Title.ToInt()},//Mode
+        //new List<int> {SceneName.StageSelect.ToInt(),SceneName.ModeSelect.ToInt()},//Char
         new List<int> {SceneName.Game.ToInt()       ,SceneName.CharSelect.ToInt()},//Stage
         new List<int> {SceneName.Resalt.ToInt()     ,SceneName.Pause.ToInt()},//Game
-        new List<int> {SceneName.ModeSelect.ToInt() ,SceneName.Game.ToInt()},//Result
+        //new List<int> {SceneName.ModeSelect.ToInt() ,SceneName.Game.ToInt()},//Result
         new List<int> {SceneName.Pause.ToInt()},//Result
     };
     [SerializeField]
@@ -193,8 +193,8 @@ public class SceneLoadManager : MonoBehaviour
         changeIEnum = BackSceneChange(no);
         StartCoroutine(changeIEnum);
     }
-    public void ChangeScene(int i = -1)
-    {
+    public void ChangeScene(int i = -1){
+		Debug.Log(IsChanging());
         if (IsChanging()) return;
 		Debug.Log("aaa2");
         if (i < 0 || i >= SceneName._EOF.ToInt()) return;
