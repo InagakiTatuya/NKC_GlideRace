@@ -7,7 +7,9 @@
 //
 //#############################################################################
 
+#if UNITY_EDITOR
 #define PC_DEBUG
+#endif
 
 using UnityEngine;
 using System.Collections;

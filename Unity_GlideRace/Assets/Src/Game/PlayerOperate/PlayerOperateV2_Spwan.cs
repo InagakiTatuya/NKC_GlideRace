@@ -112,10 +112,12 @@ public partial class PlayerOperateV2 : BaseObject {
     private void SpawnStep03Init() {
         //記憶したアンカーデータから復帰用座標にキャラを移動
         SpawnPoint data  = m_CouresAncs.GetSpw(m_AncDataGround.groupNo);
-        traPos      = data.point + new Vector3(0, 6f, 0);
-        SetPlayerDir(data.dirdirection);  //キャラ進行方向修正
-        SetPlayerModelDir(data.dirdirection);  //キャラ進行方向修正
-        m_Speed.Reset();                  //速度リセット
+        Vector3 pos = data.point + new Vector3(0, 6f, 0);
+        Vector3 dir = data.dirdirection * ((m_Rack == RackState.RACK1)? 1 : -1);
+        traPos      = pos;
+        SetPlayerDir(dir);       //キャラ進行方向修正
+        SetPlayerModelDir(dir);  //キャラ進行方向修正
+        m_Speed.Reset();         //速度リセット
 
         //カメラ
         SetCamSpecialFunc(null);

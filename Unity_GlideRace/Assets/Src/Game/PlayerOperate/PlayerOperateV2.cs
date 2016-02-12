@@ -88,34 +88,44 @@ public partial class PlayerOperateV2 : BaseObject {
 
     public bool isNpc { get{ return (m_NpcLv > 0); } } //ＮＰＣか否か
 
-    //公開関数/////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
+    //  公開関数
+    ///////////////////////////////////////////////////////////////////////////
+    //データ設定===============================================================
     public void SetCharData(PlayerCharStateData aPlayerState){
         this.ModeChange(Database.obj.GetPlayerModel(aPlayerState.modelId));
     }
 
-    //非公開関数///////////////////////////////////////////////////////////////
+    //アクティブ設定===========================================================
+    public void SetActive(bool aActive) {
+        gameObject.SetActive(aActive);
+    }
+
     //ラック変更===============================================================
-    private void SetRack(RackState aRackState) {
+    public void SetRack(RackState aRackState) {
         m_Rack = aRackState;
+
+        InputLock = (m_Rack == RackState.READY);
     }
 
+
+    ///////////////////////////////////////////////////////////////////////////
+    //  非公開関数
+    ///////////////////////////////////////////////////////////////////////////
     //初期化===================================================================
-    void Awake() {
-
-    }
+    void Awake() { }
 
     void Start() {
         //子オブジェクトの参照
-        //m_Model = transform.FindChild("Model").transform;
         m_HUD   = transform.FindChild("Canvas").GetComponent<HeadUpDisplay>();
         
         //アンカー
-        m_CouresAncs = GameObject.Find(CourseAnchors.GBJ_NAME).GetComponent<CourseAnchors>();
+        m_CouresAncs     = GameObject.Find(CourseAnchors.GBJ_NAME).GetComponent<CourseAnchors>();
         m_AncData        = m_CouresAncs.GetAnc(0);
         m_AncDataGround  = m_CouresAncs.GetAnc(0);
 
         //ステータス
-        m_wait       = 0;
+        m_wait       = 1f;
         m_Gravity    = new GravityStatus();
         m_Speed      = new SpeedStatus(0.08f,0.03f,16f);
         m_Jump       = new JumpStatus();
@@ -135,6 +145,22 @@ public partial class PlayerOperateV2 : BaseObject {
         StartPhysics(); //重力やレイキャスト
         SpwanStart();   //復帰する処理用
         TurnnStart();   //ターン
+    }
+
+    //リネーム=================================================================
+    private void Rename() {
+        gameObject.name = "Player" + m_plyNo.ToString("00");
+    }
+
+    //モデル変更===============================================================
+    private void ModeChange(GameObject aNowModel) {
+        //古いモデル削除
+        Transform  old   = transform.FindChild("Model");
+        if(old != null) { GameObject.Destroy(old); }
+        //新しいモデルを追加
+        GameObject model = Instantiate(aNowModel);
+        model.transform.SetParent(transform, false);
+        m_Model = model.transform;
     }
 
     //更新=====================================================================
@@ -250,17 +276,4 @@ public partial class PlayerOperateV2 : BaseObject {
     }
 
 
-    //リネーム=================================================================
-    private void Rename() {
-        //リネーム
-        gameObject.name = "Player" + m_plyNo.ToString("00");
-    }
-
-    //モデル変更
-    private void ModeChange(GameObject aNowModel) {
-        GameObject model = Instantiate(aNowModel);
-        model.transform.SetParent(transform,false);
-        
-        m_Model = model.transform;
-    }
 }

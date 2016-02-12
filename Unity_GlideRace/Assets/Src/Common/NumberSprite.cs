@@ -10,10 +10,18 @@ public class NumberSprite : MonoBehaviour {
 
     //管理するImage型
     private Image m_Image;
+
+    ///////////////////////////////////////////////////////////////////////////
+    //  公開プロパティ
+    ///////////////////////////////////////////////////////////////////////////
+    public bool isEnabledImage { get{ return m_Image.IsActive(); } }
+
     
-    //非公開関数===============================================================
-    //初期化===================================================================
-    void Awake() {
+    ///////////////////////////////////////////////////////////////////////////
+    //  公開関数
+    ///////////////////////////////////////////////////////////////////////////
+    //公開関数初期化処理=======================================================
+    public void Initialize() {
         //スプライト読み込み
         if(s_NumArr == null || s_NumArr.Length == 0) {
             s_NumArr = null;
@@ -21,20 +29,22 @@ public class NumberSprite : MonoBehaviour {
         }
         
         //イメージ読み込み
-        m_Image = GetComponent<Image>();
-    
+        if(m_Image == null) FindImage();
+        SetEnabled(true);
+        SetEnabledImage(true);
+
     }
 
-	void Start () {
-	
-	}
-	
-	void Update () {
-	
-	}
+    //アクティブ設定===========================================================
+    public void SetEnabled(bool aActive) {
+        base.enabled = aActive;
+    }
+    public void SetEnabledImage(bool aActive) {
+        if(m_Image == null) FindImage();    
+        m_Image.enabled = aActive;
+    }
 
-
-    //公開関数=================================================================
+    //スプライト変更===========================================================
     public void SetNumber(int aNum) {
         #if UNITY_EDITOR
         if(aNum < 0 || aNum >= s_NumArr.Length) {
@@ -44,6 +54,18 @@ public class NumberSprite : MonoBehaviour {
         }
         #endif
         m_Image.sprite = s_NumArr[aNum];
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    //  非公開関数
+    ///////////////////////////////////////////////////////////////////////////
+    //初期化===================================================================
+    void Awake() {
+        Initialize();
+    }
+    //イメージコンポーネント取得===============================================
+    private void FindImage() {
+        m_Image = GetComponent<Image>();
     }
 
 }

@@ -9,7 +9,9 @@ public class PlayerManager : BaseObject {
     private int m_manNum;  //人間人数
     private int m_npcNum;  //コンピュータ人数
 
-    //公開関数=================================================================
+    ///////////////////////////////////////////////////////////////////////////
+    //  公開関数
+    ///////////////////////////////////////////////////////////////////////////
     //キャラクターのデータを受け取る===========================================
     //  受け取ったデータを使いデータベースから取り出し適用する
     //=========================================================================
@@ -20,7 +22,13 @@ public class PlayerManager : BaseObject {
 
         //データを渡す
         for(int i = 0; i < m_PlayerArr.Length; i++) {
+            //データ設定
             m_PlayerArr[i].SetCharData(Database.obj.GetPlayerCharaState(aChar[i]));
+            //CPU Lv
+            int npc = ((aMode[i] >= 2) ? (aMode[i] - 1) : (0));
+            m_PlayerArr[i].SetNpcLv = npc;
+            //アクティブ
+            m_PlayerArr[i].SetActive(aMode[i] != 0);
         }
 
         //参加人数を設定
@@ -30,7 +38,18 @@ public class PlayerManager : BaseObject {
         CameraSeting();
     }
 
-    //非公開関数===============================================================
+    //ラックを設定する=========================================================
+    //  全てのプレイヤーに対してラックを代入する
+    //=========================================================================
+    public void SendRack(RackState aRack) {
+        for(int i = 0; i < m_PlayerArr.Length; i++) {
+            m_PlayerArr[i].SetRack(aRack);
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    //  非公開関数
+    ///////////////////////////////////////////////////////////////////////////
     //初期化===================================================================
     void Awake() {
         base.m_doNotPause = true;
@@ -78,7 +97,7 @@ public class PlayerManager : BaseObject {
     private void CameraSeting() {
         Debug.Log("PlayerManager::CameraSeting()");
         if(m_charNum == 0) {
-            Debug.LogError("エラー：SetPlayNum()を先に呼んでください");
+            Debug.LogError("エラー：参加プレイヤーが０体でした。");
             return;
         }
         
