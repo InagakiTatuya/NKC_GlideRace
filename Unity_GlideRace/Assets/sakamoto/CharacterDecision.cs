@@ -21,6 +21,7 @@ public class CharacterDecision : MonoBehaviour {
 	private	IconCount	iconCount;
 
 	void Start () {
+		SoundManager.obj.PlayBGM(1,true);
 		decIcons	=	0;
 		length		=	transform.childCount;
 		childObj	=	new GameObject[length];
@@ -52,6 +53,7 @@ public class CharacterDecision : MonoBehaviour {
 			decTrans.localScale	=	Vector2.one;
 			for(int i = 0;i<PlayerNum;i++){
 				if(input[i].menu){
+					Debug.Log(act);
 					act = transform.root.GetComponent<SceneLoadManager>().ChangeScene;
 				}
 				InputPad.InputData(ref input[i], i+1);

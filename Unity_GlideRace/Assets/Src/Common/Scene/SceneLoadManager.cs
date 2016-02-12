@@ -196,6 +196,7 @@ public class SceneLoadManager : MonoBehaviour
     public void ChangeScene(int i = -1)
     {
         if (IsChanging()) return;
+		Debug.Log("aaa2");
         if (i < 0 || i >= SceneName._EOF.ToInt()) return;
         if (!loadedSceneFlg[i]) return;
         if (!SceneList.ContainsKey(i)) return;

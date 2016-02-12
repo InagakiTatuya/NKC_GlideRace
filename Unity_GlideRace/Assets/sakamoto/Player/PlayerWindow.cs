@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine.UI;
 
 public class PlayerWindow : MonoBehaviour {
-
+	
 	private	InputData[]				input		=	new InputData[4];
 	private	Image					image;
 	public	Sprite[]				sprite;

@@ -19,13 +19,15 @@ public partial class SoundManager : MonoBehaviour {
     public static SoundManager obj{ get{ return sta_obj; } }
 
     //Inspectoerで編集^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    [SerializeField] private string  m_ResPathBGM    = "BGM";   //BGMリソースの場所
-    [SerializeField] private string  m_ResPathSE     = "SE";    //SE リソースの場所
+    [SerializeField] private string  m_ResPathBGM    = "Sound/BGM";   //BGMリソースの場所
+    [SerializeField] private string  m_ResPathSE     = "Sound/SE";    //SE リソースの場所
     [SerializeField] private float   m_FadeTime      = 1f;      //BGM変更時に起こるフェード時間(秒)
     [SerializeField] private bool    m_StartPlay     = true;    //オブジェクト有効時に再生するか
-    [SerializeField] private int     m_SeMax         = 8;       //SEの最大再生数
 
     //非公開変数^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    private bool             m_fadein;           //BGMをフェードするフラグ
+    private bool             m_fadeout;          //BGMをフェードするフラグ
+    private bool             m_stop;             //BGMを停止
     private bool             m_change;           //BGMの切り替えフラグ
     private int              m_musicNumber;      //再生するBGMの配列番号
     
@@ -34,9 +36,11 @@ public partial class SoundManager : MonoBehaviour {
     private AudioClip[]      m_seArr;            //使うSE用配列
 
     //AudioSource
+    private const int        m_SE_MAX = 8;
     private AudioSource      m_bgmSource;        //BGM用のAudioSource
     private AudioSource[]    m_seSourceArr;      //SE用のAudioSource
 
+	private	bool			 m_bgmloopflg;		 //BGM用ループフラグ
     //非公開関数===============================================================================================================
     
     //Awake====================================================================================================================
@@ -56,17 +60,14 @@ public partial class SoundManager : MonoBehaviour {
         //使用する音声データの読み込み
         if(m_bgmArr == null) m_bgmArr = Resources.LoadAll<AudioClip>(m_ResPathBGM);//BGM読み込み
         if(m_seArr  == null) m_seArr  = Resources.LoadAll<AudioClip>(m_ResPathSE ); //SE読み込み
-
-        //SE用AudioSource管理配列
-        m_seSourceArr = new AudioSource[m_SeMax];
+        //配列の数指定
+        m_seSourceArr = new AudioSource[m_SE_MAX];
 
         //AudioSouceコンポーネントを割り当てる
-        //BGM用
         m_bgmSource = gameObject.AddComponent<AudioSource>();
 
-        //SE用
         for(int i = 0; i < m_seSourceArr.Length; i++) {
-            m_seSourceArr[i] = gameObject.AddComponent<AudioSource>();
+            m_seSourceArr[i] = gameObject.AddComponent<AudioSource>();   //AudioSouce割り当て
         }
 
         //チェックがついていたらBGM配列の先頭を再生する
@@ -81,59 +82,95 @@ public partial class SoundManager : MonoBehaviour {
 
     //Update===================================================================================================================
     void Update() {
-        //デバッグ用\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=
-        #if UNITY_EDITOR
-        if(Input.GetKeyDown(KeyCode.Alpha0  )) PlaySE(0);
-        if(Input.GetKeyDown(KeyCode.Alpha1  )) PlaySE(1);
-        if(Input.GetKeyDown(KeyCode.Alpha2  )) PlaySE(2);
-        if(Input.GetKeyDown(KeyCode.Alpha3  )) PlaySE(3);
-        if(Input.GetKeyDown(KeyCode.Alpha4  )) PlaySE(4);
-        if(Input.GetKeyDown(KeyCode.Alpha5  )) PlaySE(5);
-        if(Input.GetKeyDown(KeyCode.Alpha6  )) PlaySE(6);
-        if(Input.GetKeyDown(KeyCode.Alpha7  )) PlaySE(7);
-        if(Input.GetKeyDown(KeyCode.Alpha8  )) PlaySE(8);
-        if(Input.GetKeyDown(KeyCode.Alpha9  )) PlaySE(9);
-        #endif
-        //\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=
+        ////デバッグ用\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=
+        //#if UNITY_EDITOR
+        //if(Input.GetKeyDown(KeyCode.Alpha0  )) PlaySE(0);
+        //if(Input.GetKeyDown(KeyCode.Alpha1  )) PlaySE(1);
+        //if(Input.GetKeyDown(KeyCode.Alpha2  )) PlaySE(2);
+        //if(Input.GetKeyDown(KeyCode.Alpha3  )) PlaySE(3);
+        //if(Input.GetKeyDown(KeyCode.Alpha4  )) PlaySE(4);
+        //if(Input.GetKeyDown(KeyCode.Alpha5  )) PlaySE(5);
+        //if(Input.GetKeyDown(KeyCode.Alpha6  )) PlaySE(6);
+        //if(Input.GetKeyDown(KeyCode.Alpha7  )) PlaySE(7);
+        //if(Input.GetKeyDown(KeyCode.Alpha8  )) PlaySE(8);
+        //if(Input.GetKeyDown(KeyCode.Alpha9  )) PlaySE(9);
+        //#endif
+        ////\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=
 
-        //BGMを変更
-        if(m_change) { //変更フラグが立った場合
+
+        //BGM操作--------------------------------------------------------------
+        //フェードアウト
+        if(m_fadeout) {
             m_bgmSource.volume -= Time.deltaTime * m_FadeTime;  //ボリュームを少しずつ下げる
             if(m_bgmSource.volume <= 0) {
-                m_bgmSource.Stop();                                 //音楽をとめる
-                m_bgmSource.clip = m_bgmArr[m_musicNumber];         //音楽を入れ替える
-                m_bgmSource.Play();                                 //音楽を再生する
-                m_change = false;
-            }
-        } else {
-            m_bgmSource.volume += Time.deltaTime * m_FadeTime;  //ボリュームを少しずつ上げる
-            if(m_bgmSource.volume >= 1) {                       //ボリュームが1を超えたら、1を代入する。
-                m_bgmSource.volume = 1;
+                m_bgmSource.volume = 0;
+                m_fadeout = false;
             }
         }
+        //フェードイン
+        if(m_fadein && !m_fadeout) {
+            m_bgmSource.volume += Time.deltaTime * m_FadeTime;  //ボリュームを少しずつ上げる
+            if(m_bgmSource.volume >= 1) {
+                m_bgmSource.volume = 1;
+                m_fadein = false;
+            }
+     
+        }
+
+        //停止
+        if(m_stop && !m_fadeout) {
+            m_bgmSource.Stop(); //音楽をとめる
+            m_stop = false;
+        }
+
+        //再生
+        if(m_change && !m_fadeout) {
+            m_bgmSource.clip = m_bgmArr[m_musicNumber]; //音楽を入れ替える
+            m_bgmSource.loop = m_bgmloopflg;            //ループ設定
+            m_bgmSource.Play();                         //音楽を再生する
+            m_change = false;
+        }
+
     }
+
+
 
     //公開変数=================================================================================================================
 
     //BGM再生==================================================================================================================
     //  指定されたBGMを再生する
-    //  また、別のBGMが再生されていた場合クロスフェードをし変更する。
+    //  また、別のBGMが再生されていた場合フェードしてから変更する。
     //---------------------------------------------------------------
     //第１引数： playNo      再生するBGMの番号
     //---------------------------------------------------------------
-    public void PlayBGM(int playNo) {
+    public void PlayBGM(int playNo, bool loopflg = false, bool fadeOut = true) {
         //配列外の番号だった場合returnする
         if(0 > playNo || m_bgmArr.Length <= playNo) return;
 
         //再生中のBGMと同じだったらreturnする
-        if(m_bgmSource.clip == m_bgmArr[playNo]) return;
+        if(m_bgmSource.isPlaying && m_bgmSource.clip == m_bgmArr[playNo]) return;
 
         //再生するBGMの番号を切り替え
         m_musicNumber = playNo;
 
-        //切り替えフラグON
-        m_change = true;
+		m_bgmloopflg = loopflg;
 
+        //フラグ
+        m_fadeout = fadeOut; //フェードアウト
+        m_fadein  = true;    //フェードイン
+        m_change  = true;    //切り替えフラグON
+    }
+
+    //BGM停止==================================================================================================================
+    //  再生中のBGMを再生する
+    //  また、第一引数が真のとき、フェードしてから停止する。
+    //---------------------------------------------------------------
+    //第１引数： fadeOut      フェードアウトをするか否か
+    //---------------------------------------------------------------
+    public void StopBGM(bool fadeOut = true) {
+        m_fadeout = fadeOut; //フェードアウト
+        m_fadein  = false;   //フェードイン
+        m_stop    = true;
     }
 
     //SE再生===================================================================================================================
@@ -155,6 +192,8 @@ public partial class SoundManager : MonoBehaviour {
             }
         }
 
-        Debug.LogWarning("SE用AudioSouceが足りませんでした。 現在の最大数:"+m_SeMax);
+        Debug.LogWarning("SE用AudioSouceが足りませんでした。 現在の最大数:"+m_SE_MAX);
     }
+
+
 }
