@@ -24,6 +24,7 @@ public class NPCWindow : MonoBehaviour {
 		CursorManager	cm	=	other.gameObject.GetComponent<CursorManager>();
 		if(cm == null)	return;
 		if(!cm.GetAccel())	return;
+		Debug.Log(npcButton.state);
 		npcButton.state	=	NPCButton.STATUS.CLOSE;
 	}
 

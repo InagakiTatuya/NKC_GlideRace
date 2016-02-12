@@ -12,8 +12,8 @@ namespace ScenesNames{
 		Pause,
         _EOF
 	}
-    static class SceneNameExtends
-    {
+
+    static class SceneNameExtends{
         public static int ToInt(this SceneName s)
         {
             return (int)s;

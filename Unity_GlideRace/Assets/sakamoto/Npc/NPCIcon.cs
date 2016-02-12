@@ -49,7 +49,10 @@ public class NPCIcon : MonoBehaviour {
 			case STATUS.Cancel:		cancel();	break;
 			case STATUS.None:					break;
 		}
-		if(windowNo.npcButton.state	== NPCButton.STATUS.CLOSE)	state = STATUS.Cancel;
+		if(windowNo.npcButton.state	== NPCButton.STATUS.CLOSE
+			||windowNo.npcButton.state	== NPCButton.STATUS.NOTURN){
+			state = STATUS.Cancel;
+		}
 	}
 
 	void control(){

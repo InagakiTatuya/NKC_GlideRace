@@ -39,6 +39,7 @@ public class NPCButton : MonoBehaviour {
 	}
 	
 	void Update () {
+		if(No == 0)	Debug.Log(state);
 		if(!putOnFlg){
 			Reduction	+= 0.1f;
 			float	t = Mathf.Pow(Reduction,3.0f);
@@ -114,12 +115,14 @@ public class NPCButton : MonoBehaviour {
 	}
 
 	void Noturn(){
-		trans.localScale	=	Vector3.zero;
+		trans.localScale		=	Vector3.zero;
+		childTrans.localScale	=	Vector3.zero;
 	}
 
 	void None(){
 		if(trans.localScale	!=	Vector3.zero)	return;
 		trans.localScale	=	Vector3.one;
+		trans.sizeDelta		=	DEFALUTSIZE;
 	}
 
 	bool ComparisonSize(Vector2 a,Vector2 b){

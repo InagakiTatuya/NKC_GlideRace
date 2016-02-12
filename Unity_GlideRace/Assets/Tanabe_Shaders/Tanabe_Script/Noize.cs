@@ -2,14 +2,16 @@
 using System.Collections;
 using UnityEngine.UI;
 
-public class noize : MonoBehaviour {
+public class Noize : MonoBehaviour {
 
 	private Color c;
 	private Material m;
-	private float timer;
+	public float timer;
 	private float alpha;
+	private	Vector2	offset;
 
 	void Start () {
+		offset	=	Vector2.zero;
 		m = GetComponent<Image>().material;
 		if(m == null){
 			this.enabled = false;
@@ -18,7 +20,7 @@ public class noize : MonoBehaviour {
 		CalcAlpha();
 		timer=0;
 		//x方向速度、y方向速度、アニメーションループフラグ(0以外でON)、未使用
-		c = new Color(0,0.2f,1,0);
+		c = new Color(0.0f,0.2f,1.0f,0.0f);
 		//テクチャアニメーションパラメータ送信
 		m.SetColor("_TransData",c);
 		//合成アルファ値
@@ -32,6 +34,10 @@ public class noize : MonoBehaviour {
 		}
 		CalcAlpha();
 		c.b = timer;
+		
+		offset.y	= timer / 10.0f;
+		m.SetTextureOffset("_BrendTex",offset);
+
 		m.SetColor("_TransData",c);
 		m.SetFloat("_Alpha",alpha);
 		timer+=Time.deltaTime;
