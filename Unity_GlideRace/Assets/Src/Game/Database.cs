@@ -2,14 +2,16 @@
 using System.Collections;
 
 public class Database : SingletonCustom<Database> {
+    //プレイヤー^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^-
+    public  const int         PLAYER_MAX = 4;     //参加可能なプレイヤー数
 
     //キャラクター^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    public  const int         PLAYERCHAR_MAX = 4; //キャラクター数
+    public  const int         CHAR_DATA_MAX = 4; //キャラクター数
     
     private GameObject[]      m_PlayerCharModelArr; //キャラクターモデル
     
     //ステータス
-    private PlayerCharStateData[] m_CaraStateArr = new PlayerCharStateData[PLAYERCHAR_MAX] {
+    private PlayerCharStateData[] m_CaraStateArr = new PlayerCharStateData[CHAR_DATA_MAX] {
                 new PlayerCharStateData(0 ,1f, 0.1f), //char01
                 new PlayerCharStateData(1, 1f, 0.1f), //char02
                 new PlayerCharStateData(2, 1f, 0.1f), //char03
@@ -24,7 +26,7 @@ public class Database : SingletonCustom<Database> {
 
     //キャラクターステータス取得===============================================
     public PlayerCharStateData GetPlayerCharaState(int aIndex) {
-        if(aIndex < 0 || aIndex >= PLAYERCHAR_MAX) {
+        if(aIndex < 0 || aIndex >= CHAR_DATA_MAX) {
             Debug.LogError("IndexOutOfRangeException");
             return new PlayerCharStateData();
         }

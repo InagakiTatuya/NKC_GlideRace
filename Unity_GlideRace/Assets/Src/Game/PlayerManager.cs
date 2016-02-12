@@ -2,8 +2,9 @@
 using System.Collections;
 
 public class PlayerManager : BaseObject {
+    
+    public const string NAME = "PlayerManager";
 
-    private const int           PLAYER_MAX = 4;     //プレイヤーの数
     private PlayerOperateV2[]   m_PlayerArr;        //管理するための配列
 
     //公開関数=================================================================
@@ -37,11 +38,14 @@ public class PlayerManager : BaseObject {
     //プレイヤー取得===========================================================
     //シーン上に配置されているプレイヤーオブジェクトを検索し取得する
     private void FindPlayer() {
-        m_PlayerArr = new PlayerOperateV2[PLAYER_MAX];
-        for(int i = 0; i < PLAYER_MAX; i++) {
-            m_PlayerArr[i] = GameObject.
-                Find("Player0" + (i + 1)).GetComponent<PlayerOperateV2>();
+        m_PlayerArr = GameObject.FindObjectsOfType<PlayerOperateV2>();
+        
+        #if UNITY_EDITOR
+        if(m_PlayerArr.Length != Database.PLAYER_MAX) {
+            Debug.LogError("Error：シーン上に存在するPlyerの数が異常デス");
         }
+        #endif
+
     }
 
 }

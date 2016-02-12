@@ -193,7 +193,7 @@ public class HeatStatus {
     
     public HeatStatus() {
         timeCount = 0f;
-        value     = 0f;
+        value     = MAX;
     }
 }
 
