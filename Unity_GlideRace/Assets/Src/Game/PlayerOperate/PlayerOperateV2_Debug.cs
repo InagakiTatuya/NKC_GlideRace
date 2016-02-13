@@ -15,7 +15,7 @@ public partial class PlayerOperateV2 : BaseObject {
 //=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=
 //ココより下は、デバック用 
 //=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=
-    /*
+    
 #if UNITY_EDITOR
     //GUI
     void OnGUI() {
@@ -27,11 +27,12 @@ public partial class PlayerOperateV2 : BaseObject {
 
         //RACK
         GUILayout.Label("State = " + System.Enum.GetName(typeof(RackState), m_Rack));
-        //if(GUILayout.Button("To " + System.Enum.GetName(typeof(RackState), 0))) { m_Rack = (RackState)0; }
-        //if(GUILayout.Button("To " + System.Enum.GetName(typeof(RackState), 1))) { m_Rack = (RackState)1; }
-        //if(GUILayout.Button("To " + System.Enum.GetName(typeof(RackState), 2))) { m_Rack = (RackState)2; }
-        //if(GUILayout.Button("To " + System.Enum.GetName(typeof(RackState), 3))) { m_Rack = (RackState)3; }
-
+        
+        if(GUILayout.Button("To " + System.Enum.GetName(typeof(RackState), 0))) { m_Rack = (RackState)0; }
+        if(GUILayout.Button("To " + System.Enum.GetName(typeof(RackState), 1))) { m_Rack = (RackState)1; }
+        if(GUILayout.Button("To " + System.Enum.GetName(typeof(RackState), 2))) { m_Rack = (RackState)2; }
+        if(GUILayout.Button("To " + System.Enum.GetName(typeof(RackState), 3))) { m_Rack = (RackState)3; }
+        
         //Anc
         if(m_AncData != null) {
             GUILayout.Label("AncIndNo = " + m_AncData.indexNo + "\nAncGroNo = " + m_AncData.groupNo);

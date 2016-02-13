@@ -41,6 +41,7 @@
 				return o;
             }
 			
+			float _WhiteFlag;
 			float _TransTime;
 			sampler2D _MainTex;
 
@@ -49,7 +50,12 @@
 				float t = _TransTime;
                 half4 c = tex2D (_MainTex, IN.uv);
 
-				if(1-IN.uv.y<_TransTime) c.rgb = half3(0,1-IN.uv.y,1)*c.a;
+				if(_WhiteFlag==0){
+					if(1-IN.uv.y<_TransTime) c.rgb = half3(0,1-IN.uv.y,1)*c.a;
+				}else{
+					c.rgb = half3(0,1-IN.uv.y,1)*c.a;
+					if(1-IN.uv.y<_TransTime && 1-IN.uv.y>_TransTime-0.01f) c.rgb = 1.0f;
+				}
 
                 return c;
             }

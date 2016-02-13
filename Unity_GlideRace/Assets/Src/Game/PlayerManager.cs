@@ -5,9 +5,17 @@ public class PlayerManager : BaseObject {
     
     private PlayerOperateV2[]   m_PlayerArr;        //管理するための配列
 
-    private int m_charNum; //参加人数
-    private int m_manNum;  //人間人数
-    private int m_npcNum;  //コンピュータ人数
+    private int m_charCnt; //参加人数
+    private int m_manCnt;  //人間人数
+    private int m_npcCnt;  //コンピュータ人数
+
+    private int m_goalManCnt;
+    private int m_goalNpcCnt;
+
+    private bool m_fManAllGoal;
+
+    //公開プロパティ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    public bool ManAllGoal { get{ return m_fManAllGoal; } }
 
     ///////////////////////////////////////////////////////////////////////////
     //  公開関数
@@ -47,15 +55,43 @@ public class PlayerManager : BaseObject {
         }
     }
 
+    //ゴール受け取り===========================================================
+    //  プレイヤーからゴールをした信号を受け取る
+    //=========================================================================
+    public void ReportGoal(int aPlyNo) {
+        if(m_PlayerArr[aPlyNo].isNpc) {
+            m_goalNpcCnt++;
+        }else{
+            m_goalManCnt++;
+        }
+
+        //EndStateに移行するフラグ
+        if(m_goalManCnt >= m_manCnt) {
+            m_fManAllGoal = true;
+        }
+
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     //  非公開関数
     ///////////////////////////////////////////////////////////////////////////
     //初期化===================================================================
     void Awake() {
         base.m_doNotPause = true;
+        Initialize();
     }
 	//void Start () { }
 	//void Update () { }
+
+    //初期化===================================================================
+    private void Initialize() {
+        m_charCnt = 0;
+        m_manCnt  = 0;
+        m_npcCnt  = 0;
+        m_goalManCnt = 0;
+        m_goalNpcCnt = 0;
+        m_fManAllGoal = false;
+    }
     
     //プレイヤー取得===========================================================
     //シーン上に配置されているプレイヤーオブジェクトを検索し取得する
@@ -88,24 +124,24 @@ public class PlayerManager : BaseObject {
             if(aMode[i] == 2) npcCnt++;
         }
 
-        m_charNum = manCnt + npcCnt;
-        m_manNum  = manCnt;
-        m_npcNum  = npcCnt;
+        m_charCnt = manCnt + npcCnt;
+        m_manCnt  = manCnt;
+        m_npcCnt  = npcCnt;
     }
 
     //描画カメラ調整===========================================================
     private void CameraSeting() {
         Debug.Log("PlayerManager::CameraSeting()");
-        if(m_charNum == 0) {
+        if(m_charCnt == 0) {
             Debug.LogError("エラー：参加プレイヤーが０体でした。");
             return;
         }
         
         //描画範囲の大きさ取得
         int  camRectId = 0;
-        if(m_manNum <= 1) camRectId = Database.CAMRECTID_1Play;
-        if(m_manNum == 2) camRectId = Database.CAMRECTID_2Play;
-        if(m_manNum >= 3) camRectId = Database.CAMRECTID_3PlayOver;
+        if(m_manCnt <= 1) camRectId = Database.CAMRECTID_1Play;
+        if(m_manCnt == 2) camRectId = Database.CAMRECTID_2Play;
+        if(m_manCnt >= 3) camRectId = Database.CAMRECTID_3PlayOver;
         Rect manRect = Database.obj.GetCameraRect(camRectId);
         Rect npcRect = Database.obj.GetCameraRect(Database.CAMRECTID_NpcOrNon);
         //カメラに適用

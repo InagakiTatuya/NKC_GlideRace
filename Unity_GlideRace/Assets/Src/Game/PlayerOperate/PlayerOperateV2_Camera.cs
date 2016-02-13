@@ -52,9 +52,12 @@ public partial class PlayerOperateV2 : BaseObject {
 
 
     //初期化///////////////////////////////////////////////////////////////////
-    private void CameraStart() {
+    private void CameraAwke() {
         //カメラ
         if(m_Camera == null) FindCamera();
+    }
+    
+    private void CameraStart() {
         //ロック
         m_fComPosLock = false;
         m_fComRotLock = false;

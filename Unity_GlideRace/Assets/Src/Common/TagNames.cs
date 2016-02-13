@@ -10,5 +10,6 @@ public class TagNames {
     public const string JumpTrigger  = "JumpTrigger";
     public const string HeatTrigger  = "HeatTrigger";
     public const string TurnTrigger  = "TurnTrigger";
+    public const string StartAndGoal = "StartAndGoal";
 
 }

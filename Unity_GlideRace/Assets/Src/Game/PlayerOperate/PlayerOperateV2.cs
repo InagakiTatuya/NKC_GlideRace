@@ -13,6 +13,7 @@ public partial class PlayerOperateV2 : BaseObject {
     [SerializeField] public int m_NpcLv = 0;    //CPU
 
     //非公開変数^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    private PlayerManager   m_PlyMgr;  //プレイヤーマネージャ
     //子オブジェクトの参照
     private Transform       m_Model;    //モデル
     private HeadUpDisplay   m_HUD;      //ヘッドアップディスプレイ
@@ -58,6 +59,7 @@ public partial class PlayerOperateV2 : BaseObject {
     public const int TRGGER_Jump         = 17;
     public const int TRGGER_Heat         = 18;
     public const int TRGGER_Turn         = 19;
+    public const int TRGGER_Goal         = 20;
 
     //その他の変数^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     //アクション          PlayerOperateV2_Action.cs に定義
@@ -113,11 +115,16 @@ public partial class PlayerOperateV2 : BaseObject {
     //  非公開関数
     ///////////////////////////////////////////////////////////////////////////
     //初期化===================================================================
-    void Awake() { }
+    void Awake() {
+        //PlayerManager取得----------------------------------------------------
+        m_PlyMgr = GameObject.FindObjectOfType<PlayerManager>();
+
+        m_HUD   = transform.FindChild("Canvas").GetComponent<HeadUpDisplay>();
+        CameraAwke();
+    }
 
     void Start() {
         //子オブジェクトの参照
-        m_HUD   = transform.FindChild("Canvas").GetComponent<HeadUpDisplay>();
         
         //アンカー
         m_CouresAncs     = GameObject.Find(CourseAnchors.GBJ_NAME).GetComponent<CourseAnchors>();
@@ -127,7 +134,7 @@ public partial class PlayerOperateV2 : BaseObject {
         //ステータス
         m_wait       = 1f;
         m_Gravity    = new GravityStatus();
-        m_Speed      = new SpeedStatus(0.08f,0.03f,16f);
+        m_Speed      = new SpeedStatus(0.18f,0.01f,16f);
         m_Jump       = new JumpStatus();
         m_Glider     = new GliderStatus();
         m_Heat       = new HeatStatus();
@@ -145,6 +152,8 @@ public partial class PlayerOperateV2 : BaseObject {
         StartPhysics(); //重力やレイキャスト
         SpwanStart();   //復帰する処理用
         TurnnStart();   //ターン
+        
+        GoalStart();
     }
 
     //リネーム=================================================================
@@ -193,6 +202,7 @@ public partial class PlayerOperateV2 : BaseObject {
         SearchAnchor(); //アンカー検知
         SpwanFunc();    //復帰処理
 
+        GoalFixdUpdate(); //ゴール判定とその後の処理
         
         CameraFixdUpdate();     //カメラ更新
         SendToHeadUpDisplay();  //キャンバスにデータを適用
@@ -263,6 +273,7 @@ public partial class PlayerOperateV2 : BaseObject {
          m_TrgState[TRGGER_Jump ] = false;
          m_TrgState[TRGGER_Heat ] = false;
          m_TrgState[TRGGER_Turn ] = false;
+         m_TrgState[TRGGER_Goal ] = false;
     }
 
     public void OnChildTriggerEnter(Collider col) {
@@ -273,6 +284,7 @@ public partial class PlayerOperateV2 : BaseObject {
         if(col.tag == TagNames.JumpTrigger ) m_TrgState[TRGGER_Jump ] = true;
         if(col.tag == TagNames.HeatTrigger ) m_TrgState[TRGGER_Heat ] = true;
         if(col.tag == TagNames.TurnTrigger ) m_TrgState[TRGGER_Turn ] = true;
+        if(col.tag == TagNames.StartAndGoal) m_TrgState[TRGGER_Goal ] = true;
     }
 
 

@@ -10,12 +10,13 @@ public class RayTrace : MonoBehaviour {
 	//何秒で全てを光らせるか
 	[SerializeField]
 	private float transTime = 1.0f;
-
 	private	const float	waitTime	= 0.5f;
+    private bool initTraceFlag;
 
 	private Material m;
 	private float timer;
 	void Start () {
+        initTraceFlag=false;
 		m = GetComponent<Image>().material;
 		if(m == null){
 			this.enabled = false;
@@ -33,11 +34,13 @@ public class RayTrace : MonoBehaviour {
 		
 		float t	= Mathf.Min(timer/transTime,1.0f);
 		m.SetFloat("_TransTime",t);
+		if(initTraceFlag) m.SetFloat("_WhiteFlag",1.0f);
 		timer+=Time.deltaTime;
 
 		//光終わったら停止
 		if(timer >= transTime + waitTime){
 			timer	=	0.0f;
+            initTraceFlag = true;
 			//this.enabled = false;
 			//return;
 		}

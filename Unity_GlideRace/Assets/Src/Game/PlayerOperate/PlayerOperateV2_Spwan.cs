@@ -15,7 +15,7 @@ public partial class PlayerOperateV2 : BaseObject {
     private const int       SPWANSTATESIZE   = 5;   //復帰ステートの最大数
     private StateManager    m_SpwanStep;    //ステートマシン管理
     private int             m_RespwonStepNo;  //復帰ステップ
-
+        
     //初期化===================================================================
     private void SpwanStart() {
         //復帰ステップ

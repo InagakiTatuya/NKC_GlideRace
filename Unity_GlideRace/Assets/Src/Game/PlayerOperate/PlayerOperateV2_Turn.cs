@@ -101,6 +101,7 @@ public partial class PlayerOperateV2 : BaseObject {
         Vector3 dir = (cen - tra).normalized;
         SetPlayerDir(dir);
         SetPlayerModelDir(dir);
+        Debug.Log(dir);
     }
     private void TurnStep01Update() {
         //中心に行ったら次のステップへ

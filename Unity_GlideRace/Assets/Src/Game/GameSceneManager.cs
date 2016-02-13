@@ -2,11 +2,13 @@
 using UnityEngine.Events;
 using UnityEngine.UI;
 using System.Collections;
+using ScenesNames;
 
 public class GameSceneManager : BaseObject {
 
     //参照^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     private PlayerManager m_PlyMgr;  //プレイヤーマネージャ
+    private UnityAction   m_fnGotoNextScene; //次のシーンへ移行する関数ポインタ
         
     //キャンバス関連^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     private Canvas          m_Canvas;
@@ -30,35 +32,41 @@ public class GameSceneManager : BaseObject {
 
     //初期化===================================================================
     void Awake() {
-       base.m_doNotPause = true;
+        base.m_doNotPause = true;
+
+        //PlayerManager取得----------------------------------------------------
+        m_PlyMgr = GameObject.FindObjectOfType<PlayerManager>();
+
+
     }
 	void Start() {
-        //ステート設定-------------------------------------
+        //シーン移行関数取得---------------------------------------------------
+        //if(Application.loadedLevel == SceneName.Game.ToInt()) {
+        //    m_fnGotoNextScene = transform.root.GetComponent<SceneLoadManager>().NextScene;
+        //}
+        //if(m_fnGotoNextScene == null) Debug.Log("シーン移行関数がNULLです");
+
+        //ステート設定---------------------------------------------------------
         UnityAction[] init = new UnityAction[STATE_MAX] {
             GameState00Init,
             GameState01Init,
-            null,
+            GameState02Init,
             null,
         };
         UnityAction[] update = new UnityAction[STATE_MAX] {
             GameState00Update,
             GameState01Update,
-            null,
+            GameState02Update,
             null,
         };
         m_gameState = new StateManager(STATE_MAX, init, update, true);
 	    
-        //タイマー
+        //タイマー-------------------------------------------------------------
         m_timer = 0f;
         //キャンバス関連
         CanvasRelationInit(); 
-        
-        //PlayerManager取得
-        m_PlyMgr = GameObject.FindObjectOfType<PlayerManager>();
-        
+                
         //キャラセレクトからデータを受け取る
-        
-        
         int[] plymode = selectIcon.s_selectNo; // 0 = 参加しない　1 = 人間  2 = NPC
         int[] plychar = selectIcon.s_selectChara;
 
@@ -101,7 +109,7 @@ public class GameSceneManager : BaseObject {
     //=========================================================================
     //ステートRedy ============================================================
     private void GameState00Init() {
-        m_timer = 9f;
+        m_timer = 5f;
         m_CountSprite.SetEnabled(true);
         m_CountSprite.SetEnabledImage(true);
 
@@ -153,10 +161,19 @@ public class GameSceneManager : BaseObject {
             }
         }
 
-
+        //次のステート
+        if(m_PlyMgr.ManAllGoal) {
+            m_gameState.SetNextState(m_gameState.getState+1);
+        }
 
     }
     //ステートEnd  ============================================================
+    private void GameState02Init() {
+        transform.root.GetComponent<SceneLoadManager>().ChangeScene(SceneName.Title.ToInt());
+    }
+    private void GameState02Update() {
+    
+    }
     //ステートNext ============================================================
 
 
