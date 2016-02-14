@@ -94,8 +94,37 @@ public partial class PlayerOperateV2 : BaseObject {
     //  公開関数
     ///////////////////////////////////////////////////////////////////////////
     //データ設定===============================================================
-    public void SetCharData(PlayerCharStateData aPlayerState){
-        this.ModeChange(Database.obj.GetPlayerModel(aPlayerState.modelId));
+    public void Initialize(PlayerCharStateData aData){
+        //モデル変更
+        this.ModeChange(Database.obj.GetPlayerModel(aData.modelId));
+        
+        //アンカー
+        m_AncData        = m_CouresAncs.GetAnc(0);
+        m_AncDataGround  = m_CouresAncs.GetAnc(0);
+
+        //ステータス
+        m_wait  = aData.wait;
+        m_Gravity    = new GravityStatus();
+        m_Speed      = new SpeedStatus(aData.accel, aData.turn, aData.maxSpeed);
+        m_Jump       = new JumpStatus();
+        m_Glider     = new GliderStatus();
+        m_Heat       = new HeatStatus();
+        m_Rack       = RackState.READY;
+        m_GoalData   = new GoalData();
+
+        //ステート
+        m_TrgState = new BoolArray32(false);
+        m_NowState    = new BoolArray32(false);
+
+        InputStart();   //入力
+        CameraStart(); //カメラ
+
+        SpeedStart();   //速度・方向
+        StartPhysics(); //重力やレイキャスト
+        SpwanStart();   //復帰する処理用
+        TurnnStart();   //ターン
+        
+        GoalStart();
     }
 
     //アクティブ設定===========================================================
@@ -118,43 +147,16 @@ public partial class PlayerOperateV2 : BaseObject {
     void Awake() {
         //PlayerManager取得----------------------------------------------------
         m_PlyMgr = GameObject.FindObjectOfType<PlayerManager>();
-
+        //子オブジェクトの参照
         m_HUD   = transform.FindChild("Canvas").GetComponent<HeadUpDisplay>();
+        //アンカー
+        m_CouresAncs     = GameObject.Find(CourseAnchors.GBJ_NAME).GetComponent<CourseAnchors>();
+        
+        //カメラ関連初期化        
         CameraAwke();
     }
 
-    void Start() {
-        //子オブジェクトの参照
-        
-        //アンカー
-        m_CouresAncs     = GameObject.Find(CourseAnchors.GBJ_NAME).GetComponent<CourseAnchors>();
-        m_AncData        = m_CouresAncs.GetAnc(0);
-        m_AncDataGround  = m_CouresAncs.GetAnc(0);
-
-        //ステータス
-        m_wait       = 1f;
-        m_Gravity    = new GravityStatus();
-        m_Speed      = new SpeedStatus(0.18f,0.01f,16f);
-        m_Jump       = new JumpStatus();
-        m_Glider     = new GliderStatus();
-        m_Heat       = new HeatStatus();
-        m_Rack       = RackState.READY;
-        m_GoalData   = new GoalData();
-
-        //ステート
-        m_TrgState = new BoolArray32(false);
-        m_NowState    = new BoolArray32(false);
-
-        InputStart();   //入力
-        CameraStart(); //カメラ
-
-        SpeedStart();   //速度・方向
-        StartPhysics(); //重力やレイキャスト
-        SpwanStart();   //復帰する処理用
-        TurnnStart();   //ターン
-        
-        GoalStart();
-    }
+    void Start() { }
 
     //リネーム=================================================================
     private void Rename() {

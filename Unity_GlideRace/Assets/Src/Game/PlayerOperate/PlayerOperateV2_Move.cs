@@ -92,11 +92,17 @@ public partial class PlayerOperateV2 : BaseObject {
         if(dwon) {
             addSeed = -m_Speed.ACC * 1.5f;
         }
-
+        
         //急激な減速（ブレーキ）
         bool hdwn = (m_Input.brake && !m_NowState.Or(STATE_Boost, STATE_Glide));
         if(hdwn) {
             addSeed = -m_Speed.ACC * 3.3f;
+        }
+
+        //わずかな減速
+        bool sdwn = (!hdwn &&((int)m_handleSeed != 0));
+        if(sdwn) {
+            addSeed = -m_Speed.ACC * 0.1f;
         }
 
         //速度の基礎値適用

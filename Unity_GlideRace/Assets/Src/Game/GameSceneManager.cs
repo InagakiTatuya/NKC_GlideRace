@@ -33,7 +33,7 @@ public class GameSceneManager : BaseObject {
     //初期化===================================================================
     void Awake() {
         base.m_doNotPause = true;
-
+        
         //PlayerManager取得----------------------------------------------------
         m_PlyMgr = GameObject.FindObjectOfType<PlayerManager>();
 
@@ -45,7 +45,7 @@ public class GameSceneManager : BaseObject {
         //    m_fnGotoNextScene = transform.root.GetComponent<SceneLoadManager>().NextScene;
         //}
         //if(m_fnGotoNextScene == null) Debug.Log("シーン移行関数がNULLです");
-
+		
         //ステート設定---------------------------------------------------------
         UnityAction[] init = new UnityAction[STATE_MAX] {
             GameState00Init,
@@ -79,8 +79,8 @@ public class GameSceneManager : BaseObject {
         #endif
         //*/
         
-        //データを渡す
-        m_PlyMgr.SetingPlyaerData(plymode, plychar);
+        //プレイヤーキャラクター初期化
+        m_PlyMgr.SetingPlyaer(plymode, plychar);
         
     }
 
@@ -114,7 +114,9 @@ public class GameSceneManager : BaseObject {
         m_CountSprite.SetEnabledImage(true);
 
         m_PlyMgr.SendRack(RackState.READY);
-    }
+    	//BGM変更
+		SoundManager.obj.PlayBGM(0,true);
+	}
     private void GameState00Update() {
         //カウンター
         m_timer -= Time.fixedDeltaTime;

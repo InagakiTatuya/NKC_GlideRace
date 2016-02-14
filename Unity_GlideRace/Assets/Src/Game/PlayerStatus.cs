@@ -20,11 +20,15 @@ public struct PlayerCharStateData {
     public int   modelId;   //モデルID
     public float wait;      //重さ
     public float accel;     //加速
+    public float turn;
+    public float maxSpeed;
     
-    public PlayerCharStateData(int aModelId , float aWait, float aAccel) {
-        modelId = aModelId;
-        wait    = aWait;
-        accel   = aAccel;
+    public PlayerCharStateData(int aModelId , float aWait, float aAccel, float aTurn, float aMaxSpeed) {
+        modelId  = aModelId;
+        wait     = aWait;
+        accel    = aAccel;
+        turn     = aTurn;
+        maxSpeed = aMaxSpeed;
     }
 }
 
@@ -80,6 +84,7 @@ public class SpeedStatus {
     public float ACC        = 0.1f; //Acceleration
     public float TURN       = 0.1f;  
     public float MAXSEED    = 1f;
+    public float MASXVALUE  = 1f;
     public float MINADDSEED = 3f;   //加算時にこの値以下ならこの値になる
     private float m_seed  = 0f;    //基準となる数値
     private float m_level = 1f;
@@ -90,10 +95,11 @@ public class SpeedStatus {
     public float value    { get{ return m_value; } }
     public float sqrValue { get{ return m_value * m_value; } }
 
-    public SpeedStatus(float aACC, float aTURN, float aMAXSEED) {
-        ACC      = aACC;
-        TURN     = aTURN;
-        MAXSEED  = aMAXSEED;
+    public SpeedStatus(float aACC, float aTURN, float aMASXVALUE, float aMAXSEED = 16f) {
+        ACC       = aACC;
+        TURN      = aTURN;
+        MAXSEED   = aMAXSEED;
+        MASXVALUE = aMASXVALUE;
         m_seed   = 0f;
         m_level  = 1f;
         m_value  = 0f;
@@ -118,12 +124,12 @@ public class SpeedStatus {
     //シード===================================================================
     public void AddSeed(float v) {
         m_seed  = Mathf.Max(0.0f, Mathf.Min(seed + v, MAXSEED));
-        m_value = m_level * Mathf.Pow(seed * (1f / MAXSEED), MATHINDEX);
+        m_value = m_level * MASXVALUE * Mathf.Pow(seed * (1f / MAXSEED), MATHINDEX);
     }
 
     public void SubSeed(float v) {
         m_seed  = Mathf.Max(0.0f, Mathf.Min(seed - v, MAXSEED));
-        m_value = m_level * Mathf.Pow(seed * (1f / MAXSEED), MATHINDEX);
+        m_value = m_level * MASXVALUE * Mathf.Pow(seed * (1f / MAXSEED), MATHINDEX);
     }
 
     //デバック用\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\

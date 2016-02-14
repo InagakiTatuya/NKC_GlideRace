@@ -11,10 +11,11 @@ public class Database : SingletonCustom<Database> {
 
     //ステータス
     private PlayerCharStateData[] m_CaraStateArr = new PlayerCharStateData[CHAR_DATA_MAX] {
-                new PlayerCharStateData(0 ,1f, 0.1f), //char01
-                new PlayerCharStateData(1, 1f, 0.1f), //char02
-                new PlayerCharStateData(2, 1f, 0.1f), //char03
-                new PlayerCharStateData(3, 1f, 0.1f), //char04
+                //_____________________(Model, Wait,   Acc,  trun, maxSpe)__________
+                new PlayerCharStateData(    0, 1.0f, 0.10f, 0.010f, 1.30f), //char01
+                new PlayerCharStateData(    1, 1.4f, 0.08f, 0.008f, 1.32f), //char02
+                new PlayerCharStateData(    2, 0.9f, 0.11f, 0.012f, 1.30f), //char03
+                new PlayerCharStateData(    3, 1.0f, 0.10f, 0.009f, 1.31f), //char04
             };
 
     //カメラ描画範囲^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

@@ -23,7 +23,7 @@ public class PlayerManager : BaseObject {
     //キャラクターのデータを受け取る===========================================
     //  受け取ったデータを使いデータベースから取り出し適用する
     //=========================================================================
-    public void SetingPlyaerData(int[] aMode, int[] aChar) {
+    public void SetingPlyaer(int[] aMode, int[] aChar) {
         Debug.Log("PlayerManager::SetingPlyaerData()");
         //プレイヤー取得
         if(m_PlayerArr == null) FindPlayer();
@@ -31,7 +31,7 @@ public class PlayerManager : BaseObject {
         //データを渡す
         for(int i = 0; i < m_PlayerArr.Length; i++) {
             //データ設定
-            m_PlayerArr[i].SetCharData(Database.obj.GetPlayerCharaState(aChar[i]));
+            m_PlayerArr[i].Initialize(Database.obj.GetPlayerCharaState(aChar[i]));
             //CPU Lv
             int npc = ((aMode[i] >= 2) ? (aMode[i] - 1) : (0));
             m_PlayerArr[i].SetNpcLv = npc;
@@ -59,7 +59,7 @@ public class PlayerManager : BaseObject {
     //  プレイヤーからゴールをした信号を受け取る
     //=========================================================================
     public void ReportGoal(int aPlyNo) {
-        if(m_PlayerArr[aPlyNo].isNpc) {
+        if(m_PlayerArr[aPlyNo-1].isNpc) {
             m_goalNpcCnt++;
         }else{
             m_goalManCnt++;
@@ -119,7 +119,7 @@ public class PlayerManager : BaseObject {
         Debug.Log("PlayerManager::SetPlayNum()");
         int manCnt = 0;
         int npcCnt = 0;
-        for(int i=0; i < Database.CHAR_DATA_MAX; i++) {
+        for(int i=0; i < aMode.Length; i++) {
             if(aMode[i] == 1) manCnt++;
             if(aMode[i] == 2) npcCnt++;
         }
